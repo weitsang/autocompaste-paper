@@ -1,0 +1,11 @@
+sock.h, sock.cpp
+Functions for Socket communication with ACP server
+
+Imgpros.h, Imgpros.cpp
+Functions for image processing and PageFlip
+
+OCRer.h, OCRer.cpp
+Functions for Tesseract Engine OCR
+
+Main.h, Main.cpp
+Threads and main function

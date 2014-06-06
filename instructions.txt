@@ -1,0 +1,17 @@
+There is no need to build the OpenCV library if not only using CPU, the downloaded binaries are enough
+include these libraries:
+libtesseract302.lib
+libtesseract302d.lib
+liblept168.lib
+liblept168d.lib
+opencv_core246.lib
+opencv_imgproc246.lib
+opencv_highgui246.lib
+opencv_ml246.lib
+opencv_video246.lib
+opencv_features2d246.lib
+opencv_calib3d246.lib
+
+For cuda support:
+CMAKE to build OpenCV library with WITH_CUDA=true
+OpenGL required to display MAT images with GPU
