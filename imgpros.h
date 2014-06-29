@@ -1,4 +1,4 @@
-
+// Define IMGPROS macro
 #ifndef IMGPROS_H_
 #define IMGPROS_H_
 
@@ -19,10 +19,11 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/gpu/gpu.hpp>
 
-
+// Import Tesseract API 
 #include <tesseract\baseapi.h>
 #include <leptonica\allheaders.h>
 
+// Import standard C++ headers
 #include <iostream>
 #include <string>
 #include <conio.h>

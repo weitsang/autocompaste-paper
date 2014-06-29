@@ -12,8 +12,8 @@ imgpros::imgpros()
 	prntcounter = 0;
 }
 
-
 void imgpros::rotate(Mat src,Mat &dst,double angle)
+// Applies affine transformation the src image contained in a Mat object given the angle of rotation
 {
 	Size src_sz = src.size();
 	Size dst_sz(src_sz.height, src_sz.width); 
@@ -25,6 +25,7 @@ void imgpros::rotate(Mat src,Mat &dst,double angle)
 }
 
 void imgpros::rotate(GpuMat src,GpuMat &dst,double angle)
+// Applies affine transformation the src image contained in a GpuMat object given the angle of rotation
 {
 	Size src_sz = src.size();
 	Size dst_sz(src_sz.height, src_sz.width); 
@@ -35,6 +36,7 @@ void imgpros::rotate(GpuMat src,GpuMat &dst,double angle)
 	warpAffine(src, dst, rot_mat, dst_sz);
 }
 
+// Displays the image in the specified window
 void imgpros::display(Mat src)
 {
 	imshow("result",src);
@@ -45,6 +47,7 @@ void imgpros::display(GpuMat src)
 	imshow("result",src);
 }
 
+// Rotate before displaying
 void imgpros::display()
 {
 	Mat src;
@@ -64,15 +67,16 @@ void imgpros::display()
 
 void imgpros::process_main()
 {
-	webCam>>orig;
-	cvtColor(orig, mattimage, CV_BGR2GRAY);
+	webCam>>orig; // gets a new frame from webCam
+	// cvtColor changes an image from one color space to another 
+	cvtColor(orig, mattimage, CV_BGR2GRAY); // converts orig captured from web cam to gray and stores in mattimage
 }
 
 int imgpros::init_camera(int width,int height){
 	
 	sizeres = cvSize(width,height);
 
-	webCam.release();
+	webCam.release(); // closes video file or capturing device(webcam)
 	webCam.open(0); // open the default camera
     if(!webCam.isOpened())  // check if we succeeded
     {
