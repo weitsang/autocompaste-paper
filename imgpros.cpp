@@ -80,8 +80,8 @@ int imgpros::init_camera(int width, int height){
 	webCam.open(0); // open the default camera
     if(!webCam.isOpened())  // check if we succeeded
     {
-		printf("cannot find webcam ...\n");
 		getchar();
+		printf("Unable to find capturing device. \n");
 		return(-1);
 	}
 	
@@ -124,7 +124,7 @@ void imgpros::deskew(Mat img, double angle, Mat &rotated)
 	
 }
 
-//stores frames for averaging
+// Stores frames for averaging
 bool imgpros::imagesum(Mat src, int size, vector<Mat> &Tarray)
 {	
 	Mat tmp;
