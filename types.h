@@ -11,4 +11,5 @@ struct buffer {
 	void   *start;
 	size_t  length;
 };
+
 #endif

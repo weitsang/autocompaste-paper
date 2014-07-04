@@ -1,17 +1,11 @@
-
 #include "stdafx.h"
 #include "main.h"
 
-
-
 #define M_PI 3.14159265358979323846
-
-
 
 using namespace cv;
 using namespace pad;
 using namespace std;
-
 
 Mat mattimage,temp,rotated;
 Mat dst,cdst, prev_img;
@@ -54,21 +48,17 @@ void deskew(Mat img, double angle,Mat &rotated)
 	
 }
 
-
-
-
-
 int state = 0;
 
-
-//thread 2
-//Will terminate if new page detected
+// Thread 2
+// Will terminate if new page detected
 
 void OCR_t(void *param)
 {
 
 	tesseract::TessBaseAPI *api= new tesseract::TessBaseAPI();
-	if(api->Init(NULL, "eng"))	{
+	if(api->Init(NULL, "eng"))
+	{
 			printf("could not init tess\n");
 	} 
 	api->SetPageSegMode(tesseract::PSM_AUTO_OSD);
@@ -175,7 +165,8 @@ void imgpro_t(void *param)
 		imshow("Output",camera_stack.back());
 		//cvWaitKey(20);
 
-		while(!camera_stack.empty()){
+		while(!camera_stack.empty())
+		{
 			if(mypros.compute_skew(camera_stack.back())||state == 32)
 			{
 				
@@ -229,13 +220,9 @@ int main(int argc,char* argv[])
 	cvWaitKey(300);
 
 	
-
-	while(1)
-	{//infinite loop
-	}
-
+	// Infinite loop
+	while(1) {}
+	
 	getchar();
 	return(1);
 }
-
-

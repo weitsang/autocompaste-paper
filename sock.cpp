@@ -4,30 +4,27 @@
 #include <cstring>
 #include <string>
 
-
 int i = 0;
 
-//Replace with c++ JSON formater 
-//formats text to JSON format manually
+// Replace with c++ JSON formater 
+// Formats text to JSON format manually
 string sock::toACP(string message)
 {
 
-	string header = "{\"name\":\"processRawText\",\"parameters\":[\"";
-	header += message + "\",'HARDCOPY','ocr']}";
+	string header = "{\"name\":\"processRawText\", \"parameters\":[\"";
+	header += message + "\", 'HARDCOPY', 'ocr']}";
 	return header;
 }
 
-
-//create socket for TCP connection
-//uses winsock
-int sock::connection(char* DEFAULT_PORT,string sendbus)
+// Create socket for TCP connection
+// Uses winsock
+int sock::connection(char* DEFAULT_PORT, string sendbus)
 {
-	//check if send successful
+	// Check if sent successful
 	char pass[16] = "{\"status\":0}\r\n";
 	
-	
-	pass[14]= 0;
-	pass[15]= 10;
+	pass[14] = 0;
+	pass[15] = 10;
 
 	int argc = 2;
     WSADATA wsaData;
@@ -38,7 +35,7 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
 	//std::cout<<sendbus<<endl;
 
 	char *sendbuf = new char[2048];
-	strncpy(sendbuf,sendbus.c_str(),sendbus.size()+1);
+	strncpy(sendbuf, sendbus.c_str(), sendbus.size() + 1);
 	sendbuf[sendbus.size()] = 0;
 	std::cout<<sendbuf;
 	char recvbuf[16];
@@ -47,26 +44,28 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
     
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-    if (iResult != 0) {
+    if(iResult != 0) 
+    {
         printf("WSAStartup failed with error: %d\n", iResult);
         return 1;
     }
 
-    ZeroMemory( &hints, sizeof(hints) );
+    ZeroMemory(&hints, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
     iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
-    if ( iResult != 0 ) {
+    if(iResult != 0) 
+    {
         printf("getaddrinfo failed with error: %d\n", iResult);
         WSACleanup();
         return 1;
     }
 
     // Attempt to connect to an address until one succeeds
-    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
+    for(ptr = result; ptr != NULL; ptr = ptr->ai_next) {
 
         // Create a SOCKET for connecting to server
         ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, 
@@ -77,9 +76,10 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
             return 1;
         }
 
-        // Connect to server.
-        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iResult == SOCKET_ERROR) {
+        // Connect to server
+        iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if(iResult == SOCKET_ERROR) 
+        {
             closesocket(ConnectSocket);
             ConnectSocket = INVALID_SOCKET;
             continue;
@@ -89,7 +89,8 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
 
     freeaddrinfo(result);
 
-    if (ConnectSocket == INVALID_SOCKET) {
+    if(ConnectSocket == INVALID_SOCKET) 
+    {
         printf("Unable to connect to server!\n");
         WSACleanup();
         return 1;
@@ -97,7 +98,8 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
 
     // Send an initial buffer
     iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
-    if (iResult == SOCKET_ERROR) {
+    if (iResult == SOCKET_ERROR) 
+    {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
         WSACleanup();
@@ -108,7 +110,8 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
 
     // shutdown the connection since no more data will be sent
     iResult = shutdown(ConnectSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
+    if(iResult == SOCKET_ERROR) 
+    {
         printf("shutdown failed with error: %d\n", WSAGetLastError());
         closesocket(ConnectSocket);
         WSACleanup();
@@ -119,31 +122,29 @@ int sock::connection(char* DEFAULT_PORT,string sendbus)
     do {
 
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-        if ( iResult > 0 ){
+        if(iResult > 0) 
+        {
             printf("Bytes received: %d\n", iResult);
 			printf("%s", recvbuf);
-			if(recvbuf[10]!='0')
+			if (recvbuf[10] != '0')
 			{
-				
 				closesocket(ConnectSocket);
 				WSACleanup();
 				return 1;
-
 			}
 			else
 				printf("**successful \n");
 		}
-        else if ( iResult == 0 )
+        else if(iResult == 0)
             printf("Connection closed\n");
         else
             printf("recv failed with error: %d\n", WSAGetLastError());
 
-    } while( iResult > 0 );
+    } while(iResult > 0);
 
-    // cleanup
+    // Cleanup
     closesocket(ConnectSocket);
     WSACleanup();
 
     return 0;
 }
-

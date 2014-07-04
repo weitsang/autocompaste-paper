@@ -24,7 +24,7 @@ namespace pad {
 	using namespace tesseract;
 	using namespace cv;
 
-	class OCRer  {
+	class OCRer {
 	public:
 		OCRer();
 		~OCRer();
@@ -54,4 +54,5 @@ namespace pad {
 		
 	};
 }
+
 #endif

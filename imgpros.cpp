@@ -5,15 +5,15 @@
 imgpros::imgpros()
 {	
 	nb_lines = new unsigned int;
-	startt=0;
+	startt = 0;
 	movement = false;
 	blankscrn = 0;
-	startocr= -1;
+	startocr = -1;
 	prntcounter = 0;
 }
 
-void imgpros::rotate(Mat src,Mat &dst,double angle)
 // Applies affine transformation the src image contained in a Mat object given the angle of rotation
+void imgpros::rotate(Mat src, Mat &dst, double angle)
 {
 	Size src_sz = src.size();
 	Size dst_sz(src_sz.height, src_sz.width); 
@@ -24,8 +24,8 @@ void imgpros::rotate(Mat src,Mat &dst,double angle)
 	warpAffine(src, dst, rot_mat, dst_sz);
 }
 
-void imgpros::rotate(GpuMat src,GpuMat &dst,double angle)
 // Applies affine transformation the src image contained in a GpuMat object given the angle of rotation
+void imgpros::rotate(GpuMat src, GpuMat &dst, double angle)
 {
 	Size src_sz = src.size();
 	Size dst_sz(src_sz.height, src_sz.width); 
@@ -39,12 +39,12 @@ void imgpros::rotate(GpuMat src,GpuMat &dst,double angle)
 // Displays the image in the specified window
 void imgpros::display(Mat src)
 {
-	imshow("result",src);
+	imshow("result", src);
 }
 
 void imgpros::display(GpuMat src)
 {
-	imshow("result",src);
+	imshow("result", src);
 }
 
 // Rotate before displaying
@@ -62,7 +62,7 @@ void imgpros::display()
 	Point2f center(len/2., len/2.);
 	Mat rot_mat = cv::getRotationMatrix2D(center, angle, 1.0);
 	warpAffine(src, dst, rot_mat, dst_sz);
-	imshow("result",dst);
+	imshow("result", dst);
 }
 
 void imgpros::process_main()
@@ -72,9 +72,9 @@ void imgpros::process_main()
 	cvtColor(orig, mattimage, CV_BGR2GRAY); // converts orig captured from web cam to gray and stores in mattimage
 }
 
-int imgpros::init_camera(int width,int height){
+int imgpros::init_camera(int width, int height){
 	
-	sizeres = cvSize(width,height);
+	sizeres = cvSize(width, height);
 
 	webCam.release(); // closes video file or capturing device(webcam)
 	webCam.open(0); // open the default camera
@@ -85,8 +85,8 @@ int imgpros::init_camera(int width,int height){
 		return(-1);
 	}
 	
-	webCam.set(CV_CAP_PROP_FRAME_WIDTH,width);
-	webCam.set(CV_CAP_PROP_FRAME_HEIGHT,height);
+	webCam.set(CV_CAP_PROP_FRAME_WIDTH, width);
+	webCam.set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 
 	//IPL Code
@@ -100,7 +100,7 @@ int imgpros::init_camera(int width,int height){
 }
 
 
-void imgpros::deskew(Mat img, double angle,Mat &rotated)
+void imgpros::deskew(Mat img, double angle, Mat &rotated)
 {	
 	cv::bitwise_not(img, img);
 	std::vector<cv::Point> points;
@@ -125,11 +125,11 @@ void imgpros::deskew(Mat img, double angle,Mat &rotated)
 }
 
 //stores frames for averaging
-bool imgpros::imagesum(Mat src,int size,vector<Mat> &Tarray)
+bool imgpros::imagesum(Mat src, int size, vector<Mat> &Tarray)
 {	
 	Mat tmp;
 	src.copyTo(tmp);
-	if(Tarray.size()<size)
+	if(Tarray.size() < size)
 	{
 		Tarray.push_back(tmp);
 		return true;
@@ -139,11 +139,11 @@ bool imgpros::imagesum(Mat src,int size,vector<Mat> &Tarray)
 }
 
 
-bool imgpros::imagesum(GpuMat src,int size,vector<GpuMat> &Tarray)
+bool imgpros::imagesum(GpuMat src, int size, vector<GpuMat> &Tarray)
 {	
 	GpuMat tmp;
 	src.copyTo(tmp);
-	if(Tarray.size()<size)
+	if(Tarray.size() < size)
 	{
 		Tarray.push_back(tmp);
 		return true;
