@@ -25,8 +25,8 @@ using namespace std;
 class sock
 {
 public:
-	int connection(char* DEFAULT_PORT,string buf);
-	string toACP(string message);
+    int connection(char* DEFAULT_PORT,string buf);
+    string toACP(string message);
 };
 
 #endif

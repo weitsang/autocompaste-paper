@@ -11,34 +11,34 @@ int i = 0;
 string sock::toACP(string message)
 {
 
-	string header = "{\"name\":\"processRawText\", \"parameters\":[\"";
-	header += message + "\", 'HARDCOPY', 'ocr']}";
-	return header;
+    string header = "{\"name\":\"processRawText\", \"parameters\":[\"";
+    header += message + "\", 'HARDCOPY', 'ocr']}";
+    return header;
 }
 
 // Create socket for TCP connection
 // Uses winsock
 int sock::connection(char* DEFAULT_PORT, string sendbus)
 {
-	// Check if sent successful
-	char pass[16] = "{\"status\":0}\r\n";
-	
-	pass[14] = 0;
-	pass[15] = 10;
+    // Check if sent successful
+    char pass[16] = "{\"status\":0}\r\n";
+    
+    pass[14] = 0;
+    pass[15] = 10;
 
-	int argc = 2;
+    int argc = 2;
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo *result = NULL,
                     *ptr = NULL,
                     hints;
-	//std::cout<<sendbus<<endl;
+    //std::cout<<sendbus<<endl;
 
-	char *sendbuf = new char[2048];
-	strncpy(sendbuf, sendbus.c_str(), sendbus.size() + 1);
-	sendbuf[sendbus.size()] = 0;
-	std::cout<<sendbuf;
-	char recvbuf[16];
+    char *sendbuf = new char[2048];
+    strncpy(sendbuf, sendbus.c_str(), sendbus.size() + 1);
+    sendbuf[sendbus.size()] = 0;
+    std::cout<<sendbuf;
+    char recvbuf[16];
     int iResult;
     int recvbuflen = 16;
     
@@ -125,16 +125,16 @@ int sock::connection(char* DEFAULT_PORT, string sendbus)
         if(iResult > 0) 
         {
             printf("Bytes received: %d\n", iResult);
-			printf("%s", recvbuf);
-			if (recvbuf[10] != '0')
-			{
-				closesocket(ConnectSocket);
-				WSACleanup();
-				return 1;
-			}
-			else
-				printf("**successful \n");
-		}
+            printf("%s", recvbuf);
+            if (recvbuf[10] != '0')
+            {
+                closesocket(ConnectSocket);
+                WSACleanup();
+                return 1;
+            }
+            else
+                printf("**successful \n");
+        }
         else if(iResult == 0)
             printf("Connection closed\n");
         else

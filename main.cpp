@@ -21,31 +21,31 @@ vector<Mat> camera_Stack;
 
 
 void deskew(Mat img, double angle,Mat &rotated)
-{	
+{   
 
-	cv::bitwise_not(img, img);
-	std::vector<cv::Point> points;
-	cv::Mat_<uchar>::iterator it = img.begin<uchar>();
-	cv::Mat_<uchar>::iterator end = img.end<uchar>();
-	for (; it != end; ++it)
-		if (*it)
-			points.push_back(it.pos());
-		
+    cv::bitwise_not(img, img);
+    std::vector<cv::Point> points;
+    cv::Mat_<uchar>::iterator it = img.begin<uchar>();
+    cv::Mat_<uchar>::iterator end = img.end<uchar>();
+    for (; it != end; ++it)
+        if (*it)
+            points.push_back(it.pos());
+        
 
-	cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
-	cv::Mat rot_mat = cv::getRotationMatrix2D(box.center, angle, 1);
-	//cv::Mat rotated;
-	cv::warpAffine(img, rotated, rot_mat, img.size(), cv::INTER_CUBIC);
-	cv::Size box_size = box.size;
-	if (box.angle < -45.)
-	std::swap(box_size.width, box_size.height);
+    cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
+    cv::Mat rot_mat = cv::getRotationMatrix2D(box.center, angle, 1);
+    //cv::Mat rotated;
+    cv::warpAffine(img, rotated, rot_mat, img.size(), cv::INTER_CUBIC);
+    cv::Size box_size = box.size;
+    if (box.angle < -45.)
+    std::swap(box_size.width, box_size.height);
 
-	cv::Mat cropped;
-	cv::getRectSubPix(rotated, box_size, box.center, rotated);
-	cv::bitwise_not(rotated, rotated);
-	cout<<"deskewing"<<endl;
-	//imshow("Rotated", cropped);
-	
+    cv::Mat cropped;
+    cv::getRectSubPix(rotated, box_size, box.center, rotated);
+    cv::bitwise_not(rotated, rotated);
+    cout<<"deskewing"<<endl;
+    //imshow("Rotated", cropped);
+    
 }
 
 int state = 0;
@@ -56,173 +56,173 @@ int state = 0;
 void OCR_t(void *param)
 {
 
-	tesseract::TessBaseAPI *api= new tesseract::TessBaseAPI();
-	if(api->Init(NULL, "eng"))
-	{
-			printf("could not init tess\n");
-	} 
-	api->SetPageSegMode(tesseract::PSM_AUTO_OSD);
-	string mytext; 
-	Mat img2;
+    tesseract::TessBaseAPI *api= new tesseract::TessBaseAPI();
+    if(api->Init(NULL, "eng"))
+    {
+            printf("could not init tess\n");
+    } 
+    api->SetPageSegMode(tesseract::PSM_AUTO_OSD);
+    string mytext; 
+    Mat img2;
 
-	double skew_angle = 0;
+    double skew_angle = 0;
 
-	printf("start");
-	WaitForSingleObject(angMutex, INFINITE);
-	printf("ing\n");
-	mattimage.copyTo(img2);
+    printf("start");
+    WaitForSingleObject(angMutex, INFINITE);
+    printf("ing\n");
+    mattimage.copyTo(img2);
 
-	skew_angle=*anglle;
-
-
-	ReleaseMutex(angMutex);
-	OCRer myOcr;
-			
-	sock mySock;
-
-	mySock.connection("5566","{\"name\":\"closeSourceDocument\",\"parameters\":[\"ocr\"]}");
-			
-		
-	myOcr.OCR(img2);
-
-			
-	string buffer =myOcr.all_text;
-	if(0){
-		for(set<string>::iterator setit=myOcr._dict_sent.begin(); setit!=myOcr._dict_sent.end();++setit)
-		{
-				
-			string temp = *setit;
-
-			buffer +=  temp;
+    skew_angle=*anglle;
 
 
-		}
-	}
+    ReleaseMutex(angMutex);
+    OCRer myOcr;
+            
+    sock mySock;
 
-	size_t nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
-				
-	while(nonalpha!=std::string::npos)
-	{
-		buffer.at(nonalpha) = ' ';
-		nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
-	}
-			
+    mySock.connection("5566","{\"name\":\"closeSourceDocument\",\"parameters\":[\"ocr\"]}");
+            
+        
+    myOcr.OCR(img2);
 
-	if(mySock.connection("5566",mySock.toACP(buffer)))
-	{
-		state = 3;
-		cout<<endl<<"****send fail************"<<endl;
-	}
+            
+    string buffer =myOcr.all_text;
+    if(0){
+        for(set<string>::iterator setit=myOcr._dict_sent.begin(); setit!=myOcr._dict_sent.end();++setit)
+        {
+                
+            string temp = *setit;
 
-	printf("\n");
+            buffer +=  temp;
 
-	stop=1;
-	printf("\n finish\n");
-		
 
-	_endthread();
+        }
+    }
+
+    size_t nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+                
+    while(nonalpha!=std::string::npos)
+    {
+        buffer.at(nonalpha) = ' ';
+        nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+    }
+            
+
+    if(mySock.connection("5566",mySock.toACP(buffer)))
+    {
+        state = 3;
+        cout<<endl<<"****send fail************"<<endl;
+    }
+
+    printf("\n");
+
+    stop=1;
+    printf("\n finish\n");
+        
+
+    _endthread();
 
 }
 
 void imgpro_t(void *param)
 {
-	imgpros mypros;
+    imgpros mypros;
 
-	int a=0;;
-	string filename=".jpg";
-	
-	started= 0;
-	mypros.init_camera(640,360);
-	Mat temp;
-	mypros.pimage = cvCreateImage(mypros.sizeres,IPL_DEPTH_8U,1);
-	mypros.summage = Mat::zeros(mypros.sizeres,CV_8UC1);
+    int a=0;;
+    string filename=".jpg";
+    
+    started= 0;
+    mypros.init_camera(640,360);
+    Mat temp;
+    mypros.pimage = cvCreateImage(mypros.sizeres,IPL_DEPTH_8U,1);
+    mypros.summage = Mat::zeros(mypros.sizeres,CV_8UC1);
 
-	vector<Mat> camera_stack;
+    vector<Mat> camera_stack;
 
-	//initialise
-	mypros.nPasses = 15;
-	mypros.gHeight = 640;
-	mypros.gWidth = 360;
-	while(1) 
-	{
-		started = cvWaitKey(20);
-		WaitForSingleObject(angMutex, INFINITE);
-		
-		while(camera_stack.size()<3){
-			mypros.process_main();
-			mypros.resizeimage(mypros.mattimage,mypros.mattimage,mypros.gHeight,mypros.gWidth);
-		
-			mypros.process_image(mypros.mattimage);
-			mypros.rotate(mypros.mattimage,mypros.mattimage,90);
-			
+    //initialise
+    mypros.nPasses = 15;
+    mypros.gHeight = 640;
+    mypros.gWidth = 360;
+    while(1) 
+    {
+        started = cvWaitKey(20);
+        WaitForSingleObject(angMutex, INFINITE);
+        
+        while(camera_stack.size()<3){
+            mypros.process_main();
+            mypros.resizeimage(mypros.mattimage,mypros.mattimage,mypros.gHeight,mypros.gWidth);
+        
+            mypros.process_image(mypros.mattimage);
+            mypros.rotate(mypros.mattimage,mypros.mattimage,90);
+            
 
-		
-			camera_stack.push_back(mypros.mattimage);
+        
+            camera_stack.push_back(mypros.mattimage);
 
-		}
-		ReleaseMutex(angMutex);
-	//	namedWindow("Output", CV_WINDOW_OPENGL| CV_WINDOW_AUTOSIZE);	//for  cuda support
-		imshow("Output",camera_stack.back());
-		//cvWaitKey(20);
+        }
+        ReleaseMutex(angMutex);
+    //  namedWindow("Output", CV_WINDOW_OPENGL| CV_WINDOW_AUTOSIZE);    //for  cuda support
+        imshow("Output",camera_stack.back());
+        //cvWaitKey(20);
 
-		while(!camera_stack.empty())
-		{
-			if(mypros.compute_skew(camera_stack.back())||state == 32)
-			{
-				
-				WaitForSingleObject(angMutex, INFINITE);
-				
-				//high res
-				mypros.init_camera(1920,1080);
-				mypros.process_main();
-				
-				//transfer to thread2
-				mypros.process_image(mypros.mattimage);
-				mypros.rotate(mypros.mattimage,mattimage,90);
-				//imshow("highres",mattimage);
+        while(!camera_stack.empty())
+        {
+            if(mypros.compute_skew(camera_stack.back())||state == 32)
+            {
+                
+                WaitForSingleObject(angMutex, INFINITE);
+                
+                //high res
+                mypros.init_camera(1920,1080);
+                mypros.process_main();
+                
+                //transfer to thread2
+                mypros.process_image(mypros.mattimage);
+                mypros.rotate(mypros.mattimage,mattimage,90);
+                //imshow("highres",mattimage);
 
-				//low res
-				mypros.init_camera(640,360);
-				ReleaseMutex(angMutex);
-				cout<<"o=ocr"<<endl;
-				TerminateThread(thread2,0);
+                //low res
+                mypros.init_camera(640,360);
+                ReleaseMutex(angMutex);
+                cout<<"o=ocr"<<endl;
+                TerminateThread(thread2,0);
 
-				CloseHandle(thread2);
-				thread2=(HANDLE)_beginthread(OCR_t,0,NULL);
-				
-			}
-			camera_stack.pop_back();
-			if(state == 32)
-			{
-				while(!mypros.sumofarray.empty())
-				{
-					mypros.sumofarray.pop_back();
-				}
-				while(!camera_stack.empty())
-				{
-					camera_stack.pop_back();
-				}
-				state = 0;
-			}
-		}
+                CloseHandle(thread2);
+                thread2=(HANDLE)_beginthread(OCR_t,0,NULL);
+                
+            }
+            camera_stack.pop_back();
+            if(state == 32)
+            {
+                while(!mypros.sumofarray.empty())
+                {
+                    mypros.sumofarray.pop_back();
+                }
+                while(!camera_stack.empty())
+                {
+                    camera_stack.pop_back();
+                }
+                state = 0;
+            }
+        }
 
-	}
+    }
 }
 
 
 int main(int argc,char* argv[])
-{	
-	angMutex = CreateMutex( NULL, FALSE, NULL);   
-	thread1=(HANDLE)_beginthread(imgpro_t,0,NULL);
+{   
+    angMutex = CreateMutex( NULL, FALSE, NULL);   
+    thread1=(HANDLE)_beginthread(imgpro_t,0,NULL);
 
-	cout<<gpu::getCudaEnabledDeviceCount();
+    cout<<gpu::getCudaEnabledDeviceCount();
 
-	cvWaitKey(300);
+    cvWaitKey(300);
 
-	
-	// Infinite loop
-	while(1) {}
-	
-	getchar();
-	return(1);
+    
+    // Infinite loop
+    while(1) {}
+    
+    getchar();
+    return(1);
 }

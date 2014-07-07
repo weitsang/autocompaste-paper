@@ -20,39 +20,39 @@
 
 
 namespace pad {
-	using namespace std;
-	using namespace tesseract;
-	using namespace cv;
+    using namespace std;
+    using namespace tesseract;
+    using namespace cv;
 
-	class OCRer {
-	public:
-		OCRer();
-		~OCRer();
-		void process_image(unsigned char *img_data,
-		                   int bytes_per_pixel, int bytes_per_line,
-		                   int left, int top, int width, int height);
-		void process_image(Mat img);
+    class OCRer {
+    public:
+        OCRer();
+        ~OCRer();
+        void process_image(unsigned char *img_data,
+                           int bytes_per_pixel, int bytes_per_line,
+                           int left, int top, int width, int height);
+        void process_image(Mat img);
 
-		void OCR(Mat img);
-		string OCR_text();
-		set<string>        _dict_words;
+        void OCR(Mat img);
+        string OCR_text();
+        set<string>        _dict_words;
 
-		set<string>        _sentences;
-		set<string>        _dict_sent;
-	string all_text;
-	private:
-		TessBaseAPI       *_tessapi;
-		
-		set<string>        _live_words;
-		set<char*>        _all_words;
-		Mat       _average_img;
-		Mat       _last_img;
-		int       _n_imgs;
-		int       _last_n_features;
-		bool      _motion;
-		char* ocr_text;
-		
-	};
+        set<string>        _sentences;
+        set<string>        _dict_sent;
+    string all_text;
+    private:
+        TessBaseAPI       *_tessapi;
+        
+        set<string>        _live_words;
+        set<char*>        _all_words;
+        Mat       _average_img;
+        Mat       _last_img;
+        int       _n_imgs;
+        int       _last_n_features;
+        bool      _motion;
+        char* ocr_text;
+        
+    };
 }
 
 #endif
