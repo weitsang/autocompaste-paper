@@ -6,7 +6,7 @@
 #define _WINSOCKAPI_
 #include "stdafx.h"
 
-
+// Import OpenCV libraries 
 #include <opencv/cv.h>
 #include <opencv/cvaux.h>
 #include <opencv/highgui.h>
