@@ -1,0 +1,29 @@
+class Document {
+	bool hasEBook();
+
+}
+
+class Page {
+	Document d;
+
+	// Constructor to define identifiers
+	Page();
+
+	// CPU - move to CPUProcessor
+	void rotate(Mat source, Mat &destination, double angle);
+
+	// GPU - move to GPUProcessor
+	void rotate(GpuMat source, GpuMat &destination, double angle);
+}
+
+class PageProcessor {
+	
+}
+
+class CPUProcessor extends PageProcessor {
+	
+}
+
+class GPUProcessor extends PageProcessor {
+	
+}
