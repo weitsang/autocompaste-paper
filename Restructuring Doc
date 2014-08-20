@@ -1,19 +1,34 @@
-/* Models */
+/** 
+ * Models 
+ * - Document
+ * - Page
+ *   - CPUProcessor
+ *   - GPUProcessor
+ * - Camera
+ */
+
 class Document {
+	"""Initiate identifiers"""
+	Document();
+
 	"""Returns true if an e-book version of the document is available"""
 	bool hasEBook();
-
 }
 
 class Page {
 	Document d;
 
-	"""Define identifiers"""
+	"""Initiate identifiers"""
 	Page();
 
 	"""Displays the image after rotation"""
 	void display();
 
+	""""""
+	void deskew(Mat img, double angle, Mat &rotated);
+
+	"""Handles phase 1 of image processing - applying morphological operations"""
+	int processImage(Mat image);
 }
 
 class CPUProcessor extends Page {
@@ -32,6 +47,7 @@ class CPUProcessor extends Page {
 	"""Calculates and draws lines with hough transform"""
 	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
+	"""""
 	int computeSkew(const Mat src);
 
 	"""Finds and stores large isolated blobs within an image"""
@@ -60,17 +76,20 @@ class GPUProcessor extends Page {
 	"""Calculates and draws lines with hough transform"""
 	void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
+	""""""
 	int computeSkew(GpuMat src);
 }
 
 class Camera {
+	"""Initiate identifiers"""
+	Camera();
+
 	"""Returns a Mat object of a frame captured from webcam and converts to colour space - Corresponds to process_main() in imgpros"""
 	Mat getWebCamInput();
 	
-	"""Returns a Mat object of a image from a file"""
+	"""Returns a Mat object of an image from a file"""
 	Mat getImageFileInput();	
 
 	"""Initialise webcam with frame width and height"""
 	int initCamera(int width, int height);
-
 }
