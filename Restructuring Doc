@@ -1,4 +1,6 @@
+/* Models */
 class Document {
+	"""Returns true if an e-book version of the document is available"""
 	bool hasEBook();
 
 }
@@ -6,24 +8,69 @@ class Document {
 class Page {
 	Document d;
 
-	// Constructor to define identifiers
+	"""Define identifiers"""
 	Page();
 
-	// CPU - move to CPUProcessor
-	void rotate(Mat source, Mat &destination, double angle);
+	"""Displays the image after rotation"""
+	void display();
 
-	// GPU - move to GPUProcessor
-	void rotate(GpuMat source, GpuMat &destination, double angle);
 }
 
-class PageProcessor {
+class CPUProcessor extends Page {
+	"""Displays the image in the specified window"""
+	void display(Mat src);
+
+	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
+	void rotate(Mat src, Mat &dst, double angle);
 	
+	"""Stores frames for averaging"""
+	bool imageSum(Mat src, int size, vector<Mat> &Tarray);
+
+	"""Returns a Mat object with an image of a different resolution"""
+	void resizeImage(Mat src, Mat &dst, int width, int height);	
+
+	"""Calculates and draws lines with hough transform"""
+	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+
+	int computeSkew(const Mat src);
+
+	"""Finds and stores large isolated blobs within an image"""
+	void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+
+	"""Returns ratio of white content to black"""
+	double getWhiteCount(Mat img);
+
+	"""Initiates imfill(image, 'hole')"""
+	void cvFillHoles(cv::Mat &input);
 }
 
-class CPUProcessor extends PageProcessor {
+class GPUProcessor extends Page {
+	"""Displays the image in the specified window"""
+	void display(GpuMat src);
+
+	"""Applies affine transformation the src image contained in a GpuMat object given the angle of rotation"""
+	void rotate(GpuMat src, GpuMat &dst, double angle);
 	
+	"""Stores frames for averaging"""
+	bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
+
+	"""Returns a GpuMat object with an image of a different resolution"""
+	void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
+
+	"""Calculates and draws lines with hough transform"""
+	void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+
+	int computeSkew(GpuMat src);
 }
 
-class GPUProcessor extends PageProcessor {
+class Camera {
+	"""Returns a Mat object of a frame captured from webcam and converts to colour space - Corresponds to process_main() in imgpros"""
+	Mat getWebCamInput();
 	
+	"""Returns a Mat object of a image from a file"""
+	Mat getImageFileInput();	
+
+	"""Initialise webcam with frame width and height"""
+	int initCamera(int width, int height);
+
 }
