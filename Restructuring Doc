@@ -13,6 +13,18 @@ class Document {
 
 	"""Returns true if an e-book version of the document is available"""
 	bool hasEBook();
+
+	"""Returns true if a page in the document as been flipped"""
+	bool hasFlipped();
+
+	"""Store page temporarily"""
+	storeFlippedPage();
+
+	"""If eBook exists, download specified page from ebook"""
+	downloadPage();
+
+	"""If eBook exists, download eBook"""
+	downloadBook();
 }
 
 class Page {
