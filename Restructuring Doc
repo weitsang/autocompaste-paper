@@ -105,3 +105,17 @@ class Camera {
 	"""Initialise webcam with frame width and height"""
 	int initCamera(int width, int height);
 }
+
+class Networks {
+	"""Set the ACP header with given message"""
+	string setHeader(string message);
+
+	"""Create connection and test until one transmission succeeds"""
+	createConnection();
+
+	"""Receive until peer closes connection"""
+	receiveData();
+
+	"""Cleans up and closes connection"""
+	closeConnection();
+}
