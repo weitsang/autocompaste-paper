@@ -310,7 +310,7 @@ int imgpros::compute_skewg(GpuMat src)
 {
     if(startocr == -1)
     {
-        startt = omp_get_wtime();
+        startt = omp_get_wtime(); // Returns a value in seconds of the time elapsed from some point.
         startocr = 1;
     }
     else
@@ -484,7 +484,7 @@ int imgpros::compute_skew(const Mat src)
 {
     if(startocr == -1)
     {
-        startt = omp_get_wtime();
+        startt = omp_get_wtime();  //Returns a value in seconds of the time elapsed from some point.
         startocr = 1;
     }
     else
@@ -499,7 +499,7 @@ int imgpros::compute_skew(const Mat src)
 
     cv::Size size = src.size();
 
-    Mat cdst = Mat::zeros(size,src.channels());
+    Mat cdst = Mat::zeros(size,src.channels()); // Fills the matrix with zeros
 
     cv::bitwise_not(src, src);
 
@@ -605,7 +605,7 @@ int imgpros::compute_skew(const Mat src)
 
         
         //reset the sum
-        summage = Mat::zeros(summage.size(),CV_8UC1);
+        summage = Mat::zeros(summage.size(),CV_8UC1); // Fills the matrix with zeros
         
     }
 
