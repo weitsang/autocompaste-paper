@@ -4,8 +4,8 @@
  * - CPUProcessor
  * - GPUProcessor
  * Camera
- * DemoController
- * MainController
+ * Demo
+ * Main
  * Networks
  */
 
@@ -127,3 +127,22 @@ class Networks {
 	"""Cleans up and closes connection"""
 	closeConnection();
 }
+
+class Main {
+	// Need to decide how to connect Camera, Page
+
+	// Begin image processing thread
+	Camera cam;
+	cam.initCamera(640, 360);	
+
+	while(1) {
+		Mat image = cam.getWebCamInput(); // may need to store it in a variable of Page class
+		Page page = new CPUProcessor();
+
+		page.resizeImage(cam.image, cam.image, cam.gHeight, cam.gWidth);
+		page.processImage(cam.image);
+		page.rotate(cam.image, cam.image, 90);
+	}
+	:
+	:
+	:
