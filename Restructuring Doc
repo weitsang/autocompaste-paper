@@ -146,3 +146,13 @@ class Main {
 	:
 	:
 	:
+
+	// Begin OCR thread
+	:
+	:
+	page.OCR(Mat image);
+
+	Networks nwk = new Networks();
+	nwk.createConnection();
+	// send data 
+}
