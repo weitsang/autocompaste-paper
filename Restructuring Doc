@@ -43,6 +43,12 @@ class Page {
 
 	"""Handles phase 1 of image processing - applying morphological operations"""
 	int processImage(Mat image);
+
+	"""Extracts text from image and stores as a string"""
+	void OCR(Mat img); 
+
+	"""Returns string result of OCR"""
+	void OCRToString();
 }
 
 class CPUProcessor extends Page {
