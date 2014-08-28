@@ -1,10 +1,12 @@
 /** 
- * Models 
- * - Document
- * - Page
- *   - CPUProcessor
- *   - GPUProcessor
- * - Camera
+ * Document
+ * Page
+ * - CPUProcessor
+ * - GPUProcessor
+ * Camera
+ * DemoController
+ * MainController
+ * Networks
  */
 
 class Document {
