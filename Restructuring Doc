@@ -48,7 +48,7 @@ class Page {
 	void OCR(Mat img); 
 
 	"""Returns string result of OCR"""
-	void OCRToString();
+	string OCRToString();
 }
 
 class CPUProcessor extends Page {
@@ -119,13 +119,20 @@ class Networks {
 	string setHeader(string message);
 
 	"""Create connection and test until one transmission succeeds"""
-	createConnection();
+	createConnection(char* defaultPort);
 
 	"""Receive until peer closes connection"""
 	receiveData();
 
 	"""Cleans up and closes connection"""
 	closeConnection();
+	
+	""" storing the recognized text from page to the database """
+	sendData(string message)
+	
+	""" To check if the data has been sent or not"""
+	bool sendError()
+	
 }
 
 class Main {
@@ -138,21 +145,21 @@ class Main {
 	while(1) {
 		Mat image = cam.getWebCamInput(); // may need to store it in a variable of Page class
 		Page page = new CPUProcessor();
+		Document doc = new Document();
+		Networks nwk = new Networks();
 
 		page.resizeImage(cam.image, cam.image, cam.gHeight, cam.gWidth);
 		page.processImage(cam.image);
 		page.rotate(cam.image, cam.image, 90);
+		
+		if(doc.hasFlipped(cam.image) || sendError())
+		{
+			page.OCR(cam.image);
+			string text = page.OCRtoString();
+			nwk.createConnection("5566");
+			nwk.sendData(setHeader(text));
+		}
+			
 	}
-	:
-	:
-	:
-
-	// Begin OCR thread
-	:
-	:
-	page.OCR(Mat image);
-
-	Networks nwk = new Networks();
-	nwk.createConnection();
-	// send data 
+	
 }
