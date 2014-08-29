@@ -70,7 +70,7 @@ class CPUProcessor extends Page {
 	"""Calculates and draws lines with hough transform"""
 	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
-	"""""
+	""""""
 	int computeSkew(const Mat src);
 
 	"""Finds and stores large isolated blobs within an image"""
@@ -130,12 +130,11 @@ class Networks {
 	"""Cleans up and closes connection"""
 	closeConnection();
 	
-	""" storing the recognized text from page to the database """
+	"""Storing the recognized text from page to the database"""
 	sendData(string message)
 	
-	""" To check if the data has been sent or not"""
+	"""To check if the data has been sent or not"""
 	bool sendError()
-	
 }
 
 class Main {
@@ -146,7 +145,6 @@ class Main {
 	cam.initCamera(640, 360);	
 
 	while(1) {
-		Mat image = cam.getWebCamInput(); // may need to store it in a variable of Page class
 		Page page = new CPUProcessor();
 		Document doc = new Document();
 		Networks nwk = new Networks();
