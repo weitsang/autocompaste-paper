@@ -54,6 +54,36 @@ class Page {
 	string OCRToString();
 }
 
+class Processor {
+	"""Displays the image in the specified window"""
+	virtual void display(Mat src) = 0;
+
+	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
+	virtual void rotate(Mat src, Mat &dst, double angle) = 0;
+	
+	"""Stores frames for averaging"""
+	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray) = 0;
+
+	"""Returns a Mat object with an image of a different resolution"""
+	virtual void resizeImage(Mat src, Mat &dst, int width, int height) = 0;	
+
+	"""Calculates and draws lines with hough transform"""
+	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute) = 0;
+
+	""""""
+	virtual int computeSkew(const Mat src) = 0;
+
+	"""Finds and stores large isolated blobs within an image"""
+	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs) = 0;
+
+	"""Returns ratio of white content to black"""
+	virtual double getWhiteCount(Mat img) = 0;
+
+	"""Initiates imfill(image, 'hole')"""
+	virtual void cvFillHoles(cv::Mat &input) = 0;
+}
+
+
 class CPUProcessor extends Page {
 	"""Displays the image in the specified window"""
 	void display(Mat src);
