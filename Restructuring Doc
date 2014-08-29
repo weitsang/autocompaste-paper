@@ -138,14 +138,41 @@ class Networks {
 }
 
 class Main {
-	// Need to decide how to connect Camera, Page
+	
+	/* 
+	- obtain input
+	- process image
+	- store image in cache
+	- check with prev image if exists if actually flipped
+	- send to OCR
+	
+	- check page flip
+	-   if yes, check against prev stored image
+	-      if yes, delete prev stored image, repeat steps
+
+	- check for ebook
+	-   if exists, download page/book
+	-	store in db 
+	*/
 
 	// Begin image processing thread
 	Camera cam;
 	cam.initCamera(640, 360);	
 
 	while(1) {
+		// Get input from webcam or image file
+		Mat image = cam.getWebCamInput(); 
+		// Mat image = cam.getImageFileInput();
+
+		bool isImageInput;
+
+		storeFlippedPage(image);
+
+		// If using CPU
 		Page page = new CPUProcessor();
+		// Else if using GPU
+		Page page = new GPUProcessor();
+
 		Document doc = new Document();
 		Networks nwk = new Networks();
 
@@ -153,14 +180,20 @@ class Main {
 		page.processImage(cam.image);
 		page.rotate(cam.image, cam.image, 90);
 		
-		if(doc.hasFlipped(cam.image) || sendError())
-		{
-			page.OCR(cam.image);
-			string text = page.OCRtoString();
+		if(doc.hasEBook()) {
+			book = doc.downloadEBook();
 			nwk.createConnection("5566");
-			nwk.sendData(setHeader(text));
+			nwk.sendData(book);
 		}
-			
+
+		if(isImageInput == false) {
+			if(doc.hasFlipped(cam.image) || sendError()) {
+				doc.deleteCache();
+				page.OCR(cam.image);
+				string text = page.OCRtoString();
+				nwk.createConnection("5566");
+				nwk.sendData(setHeader(text));
+			}
+		}		
 	}
-	
 }
