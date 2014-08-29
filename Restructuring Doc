@@ -1,6 +1,7 @@
 /** 
  * Document
  * Page
+ * Processor
  * - CPUProcessor
  * - GPUProcessor
  * Camera
@@ -8,8 +9,17 @@
  * Main
  * Networks
  */
+ 
+ // Document has a page 
 
 class Document {
+
+private:
+	Page current;
+	Page previous;
+
+public: 
+
 	"""Initiate identifiers"""
 	Document();
 
@@ -33,7 +43,8 @@ class Document {
 }
 
 class Page {
-	Document d;
+	
+public:
 
 	"""Initiate identifiers"""
 	Page();
