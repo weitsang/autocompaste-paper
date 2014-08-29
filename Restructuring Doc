@@ -23,8 +23,8 @@ public:
 	"""Initiate identifiers"""
 	Document();
 
-	"""Returns true if an e-book version of the document is available"""
-	bool hasEBook();
+	"""Returns true if an e-book version of the document is available online"""
+	bool EbookVersionExistOnline();
 	
 	"""Returns true if a page in the document as been flipped"""
 	bool hasFlipped(Mat image1, Mat image2);
@@ -43,7 +43,7 @@ public:
 }
 
 class Page {
-	
+	Processor processor;
 public:
 
 	"""Initiate identifiers"""
@@ -57,6 +57,8 @@ public:
 
 	"""Handles phase 1 of image processing - applying morphological operations"""
 	int processImage(Mat image);
+	
+	void setProcessor(Processor p);
 
 	"""Extracts text from image and stores as a string"""
 	void OCR(Mat img); 
@@ -200,6 +202,7 @@ class Main {
 	Camera cam;
 	cam.initCamera(640, 360);	
 
+	Document doc = new Document();
 	while(1) {
 		// Get input from webcam or image file
 		Mat image = cam.getWebCamInput(); 
@@ -207,33 +210,31 @@ class Main {
 
 		bool isImageInput;
 
-		storeFlippedPage(image);
-
+		Page page = new Page();
+		
 		// If using CPU
-		Page page = new CPUProcessor();
+		page.setProcessor(new CPUProcessor(image));
 		// Else if using GPU
-		Page page = new GPUProcessor();
+		page.setProcessor(new GPUProcessor(image));
 
-		Document doc = new Document();
+		doc.storeFlippedPage(page);
+
 		Networks nwk = new Networks();
 
-		page.resizeImage(cam.image, cam.image, cam.gHeight, cam.gWidth);
-		page.processImage(cam.image);
-		page.rotate(cam.image, cam.image, 90);
-		
-		if(doc.hasEBook()) {
-			book = doc.downloadEBook();
-			nwk.createConnection("5566");
-			nwk.sendData(book);
-		}
+		page.resizeImage(cam.gHeight, cam.gWidth);
+		page.prepareImageforOCR();
+		page.rotateClockwise(90);
 
-		if(isImageInput == false) {
+		if(imageIsFromCamera) {
 			if(doc.hasFlipped(cam.image) || sendError()) {
 				doc.deleteCache();
 				page.OCR(cam.image);
 				string text = page.OCRtoString();
-				nwk.createConnection("5566");
-				nwk.sendData(setHeader(text));
+				if(doc.EbookVersionExistOnline(text)) {  // TODO: refine the logic if the ebook has already been downloaded.
+					book = doc.downloadEBook();
+					text = extractTextFromEbook(page);
+				} 
+				sendTextToACP(text);
 			}
 		}		
 	}
