@@ -17,10 +17,13 @@ class Document {
 	bool hasEBook();
 
 	"""Returns true if a page in the document as been flipped"""
-	bool hasFlipped();
+	bool hasFlipped(Mat image1, Mat image2);
 
 	"""Store page temporarily"""
-	storeFlippedPage();
+	storeFlippedPage(Mat image);
+
+	"""Delete previously stored image"""
+	void deleteCache();
 
 	"""If eBook exists, download specified page from ebook"""
 	downloadPage();
