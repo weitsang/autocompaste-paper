@@ -41,7 +41,7 @@ class Page {
 	"""Displays the image after rotation"""
 	void display();
 
-	""""""
+	"""To rotate the image to compensate for skewing"""
 	void deskew(Mat img, double angle, Mat &rotated);
 
 	"""Handles phase 1 of image processing - applying morphological operations"""
@@ -70,7 +70,7 @@ class CPUProcessor extends Page {
 	"""Calculates and draws lines with hough transform"""
 	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
-	""""""
+	"""To calculate the skew angle of text in an image"""
 	int computeSkew(const Mat src);
 
 	"""Finds and stores large isolated blobs within an image"""
@@ -99,7 +99,7 @@ class GPUProcessor extends Page {
 	"""Calculates and draws lines with hough transform"""
 	void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
-	""""""
+	"""To calculate the skew angle of text in an image"""
 	int computeSkew(GpuMat src);
 }
 
