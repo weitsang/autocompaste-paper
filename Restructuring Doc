@@ -84,53 +84,53 @@ class Processor {
 }
 
 
-class CPUProcessor extends Page {
+class CPUProcessor : public Processor {
 	"""Displays the image in the specified window"""
-	void display(Mat src);
+	virtual void display(Mat src);
 
 	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
-	void rotate(Mat src, Mat &dst, double angle);
+	virtual void rotate(Mat src, Mat &dst, double angle);
 	
 	"""Stores frames for averaging"""
-	bool imageSum(Mat src, int size, vector<Mat> &Tarray);
+	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray);
 
 	"""Returns a Mat object with an image of a different resolution"""
-	void resizeImage(Mat src, Mat &dst, int width, int height);	
+	virtual void resizeImage(Mat src, Mat &dst, int width, int height);	
 
 	"""Calculates and draws lines with hough transform"""
-	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
 	""""""
-	int computeSkew(const Mat src);
+	virtual int computeSkew(const Mat src);
 
 	"""Finds and stores large isolated blobs within an image"""
-	void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
 
 	"""Returns ratio of white content to black"""
-	double getWhiteCount(Mat img);
+	virtual double getWhiteCount(Mat img);
 
 	"""Initiates imfill(image, 'hole')"""
-	void cvFillHoles(cv::Mat &input);
+	virtual void cvFillHoles(cv::Mat &input);
 }
 
-class GPUProcessor extends Page {
+class GPUProcessor : public Processor {
 	"""Displays the image in the specified window"""
-	void display(GpuMat src);
+	virtual void display(GpuMat src);
 
 	"""Applies affine transformation the src image contained in a GpuMat object given the angle of rotation"""
-	void rotate(GpuMat src, GpuMat &dst, double angle);
+	virtual void rotate(GpuMat src, GpuMat &dst, double angle);
 	
 	"""Stores frames for averaging"""
-	bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
+	virtual bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
 
 	"""Returns a GpuMat object with an image of a different resolution"""
-	void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
+	virtual void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
 
 	"""Calculates and draws lines with hough transform"""
-	void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
 	""""""
-	int computeSkew(GpuMat src);
+	virtual int computeSkew(GpuMat src);
 }
 
 class Camera {
