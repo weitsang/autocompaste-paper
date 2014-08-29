@@ -1,6 +1,7 @@
 /** 
  * Document
  * Page
+ * Processor
  * - CPUProcessor
  * - GPUProcessor
  * Camera
@@ -8,8 +9,17 @@
  * Main
  * Networks
  */
+ 
+ // Document has a page 
 
 class Document {
+
+private:
+	Page current;
+	Page previous;
+
+public: 
+
 	"""Initiate identifiers"""
 	Document();
 
@@ -33,7 +43,8 @@ class Document {
 }
 
 class Page {
-	Document d;
+	
+public:
 
 	"""Initiate identifiers"""
 	Page();
@@ -54,53 +65,83 @@ class Page {
 	string OCRToString();
 }
 
-class CPUProcessor extends Page {
+class Processor {
 	"""Displays the image in the specified window"""
-	void display(Mat src);
+	virtual void display(Mat src) = 0;
 
 	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
-	void rotate(Mat src, Mat &dst, double angle);
+	virtual void rotate(Mat src, Mat &dst, double angle) = 0;
 	
 	"""Stores frames for averaging"""
-	bool imageSum(Mat src, int size, vector<Mat> &Tarray);
+	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray) = 0;
 
 	"""Returns a Mat object with an image of a different resolution"""
-	void resizeImage(Mat src, Mat &dst, int width, int height);	
+	virtual void resizeImage(Mat src, Mat &dst, int width, int height) = 0;	
 
 	"""Calculates and draws lines with hough transform"""
-	void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute) = 0;
 
-	"""To calculate the skew angle of text in an image"""
-	int computeSkew(const Mat src);
+	""""""
+	virtual int computeSkew(const Mat src) = 0;
 
 	"""Finds and stores large isolated blobs within an image"""
-	void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs) = 0;
 
 	"""Returns ratio of white content to black"""
-	double getWhiteCount(Mat img);
+	virtual double getWhiteCount(Mat img) = 0;
 
 	"""Initiates imfill(image, 'hole')"""
-	void cvFillHoles(cv::Mat &input);
+	virtual void cvFillHoles(cv::Mat &input) = 0;
 }
 
-class GPUProcessor extends Page {
-	"""Displays the image in the specified window"""
-	void display(GpuMat src);
 
-	"""Applies affine transformation the src image contained in a GpuMat object given the angle of rotation"""
-	void rotate(GpuMat src, GpuMat &dst, double angle);
+class CPUProcessor : public Processor {
+	"""Displays the image in the specified window"""
+	virtual void display(Mat src);
+
+	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
+	virtual void rotate(Mat src, Mat &dst, double angle);
 	
 	"""Stores frames for averaging"""
-	bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
+	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray);
 
-	"""Returns a GpuMat object with an image of a different resolution"""
-	void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
+	"""Returns a Mat object with an image of a different resolution"""
+	virtual void resizeImage(Mat src, Mat &dst, int width, int height);	
 
 	"""Calculates and draws lines with hough transform"""
-	void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
 	"""To calculate the skew angle of text in an image"""
-	int computeSkew(GpuMat src);
+	virtual int computeSkew(const Mat src);
+
+	"""Finds and stores large isolated blobs within an image"""
+	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+
+	"""Returns ratio of white content to black"""
+	virtual double getWhiteCount(Mat img);
+
+	"""Initiates imfill(image, 'hole')"""
+	virtual void cvFillHoles(cv::Mat &input);
+}
+
+class GPUProcessor : public Processor {
+	"""Displays the image in the specified window"""
+	virtual void display(GpuMat src);
+
+	"""Applies affine transformation the src image contained in a GpuMat object given the angle of rotation"""
+	virtual void rotate(GpuMat src, GpuMat &dst, double angle);
+	
+	"""Stores frames for averaging"""
+	virtual bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
+
+	"""Returns a GpuMat object with an image of a different resolution"""
+	virtual void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
+
+	"""Calculates and draws lines with hough transform"""
+	virtual void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+
+	"""To calculate the skew angle of text in an image"""
+	virtual int computeSkew(GpuMat src);
 }
 
 class Camera {
