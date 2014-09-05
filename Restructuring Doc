@@ -8,9 +8,7 @@
  * Demo
  * Main
  * Networks
- */
- 
- // Document has a page 
+ */ 
 
 class Document {
 
@@ -24,19 +22,19 @@ public:
 	Document();
 
 	"""Returns true if an e-book version of the document is available online"""
-	bool EbookVersionExistOnline();
+	bool EBookVersionExistOnline();
 	
 	"""Returns true if a page in the document as been flipped"""
-	bool hasFlipped(Mat image1, Mat image2);
+	bool hasFlipped(Page page1, Page page2);
 
 	"""Store page temporarily"""
-	void storeFlippedPage(Mat image);
+	void storeFlippedPage(Page page));
 	
-	"""Delete previously stored image"""
+	"""Delete previously stored image(s)"""
 	void deleteCache();
 
 	"""If eBook exists, download specified page from ebook"""
-	void downloadPage();
+	Page downloadPage(String pageId);
 
 	"""If eBook exists, download eBook"""
 	void downloadBook();
@@ -50,18 +48,19 @@ public:
 	Page();
 
 	"""Displays the image after rotation"""
-	void display();
+	void displayAfterRotation();
 
 	"""To rotate the image to compensate for skewing"""
-	void deskew(Mat img, double angle, Mat &rotated);
+	void deskewImage(Mat img, double angle, Mat &rotated);
 
 	"""Handles phase 1 of image processing - applying morphological operations"""
-	int processImage(Mat image);
+	int prepareImageForOCR(Mat image);
 	
+	"""Set CPU/GPU"""
 	void setProcessor(Processor p);
 
 	"""Extracts text from image and stores as a string"""
-	void OCR(Mat img); 
+	void recogniseTextUsingOCR(Mat img); 
 
 	"""Returns string result of OCR"""
 	string OCRToString();
@@ -69,31 +68,31 @@ public:
 
 class Processor {
 	"""Displays the image in the specified window"""
-	virtual void display(Mat src) = 0;
+	virtual void displayImageInWindow(Mat src) = 0;
 
 	"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
-	virtual void rotate(Mat src, Mat &dst, double angle) = 0;
+	virtual void rotateClockwise(Mat src, Mat &dst, double angle) = 0;
 	
 	"""Stores frames for averaging"""
-	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray) = 0;
+	virtual bool storeFramesForAveraging(Mat src, int size, vector<Mat> &Tarray) = 0;
 
 	"""Returns a Mat object with an image of a different resolution"""
-	virtual void resizeImage(Mat src, Mat &dst, int width, int height) = 0;	
+	virtual void resizeImage(int width, int height) = 0;	
 
 	"""Calculates and draws lines with hough transform"""
-	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute) = 0;
+	virtual void applyHoughTransform(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute) = 0;
 
-	""""""
-	virtual int computeSkew(const Mat src) = 0;
+	"""To calculate skew angle of text in image"""
+	virtual int computeSkewTextInImage(const Mat src) = 0;
 
 	"""Finds and stores large isolated blobs within an image"""
-	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs) = 0;
+	virtual void findAndStoreBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs) = 0;
 
 	"""Returns ratio of white content to black"""
-	virtual double getWhiteCount(Mat img) = 0;
+	virtual double getWhiteContentRatio(Mat img) = 0;
 
-	"""Initiates imfill(image, 'hole')"""
-	virtual void cvFillHoles(cv::Mat &input) = 0;
+	"""Fills the image with to contrast lines"""
+	virtual void fillHolesWithSpecifiedColor(cv::Mat &input) = 0;
 }
 
 
@@ -105,45 +104,45 @@ class CPUProcessor : public Processor {
 	virtual void rotate(Mat src, Mat &dst, double angle);
 	
 	"""Stores frames for averaging"""
-	virtual bool imageSum(Mat src, int size, vector<Mat> &Tarray);
+	virtual bool storeFramesForAveraging(Mat src, int size, vector<Mat> &Tarray);
 
 	"""Returns a Mat object with an image of a different resolution"""
-	virtual void resizeImage(Mat src, Mat &dst, int width, int height);	
+	virtual void resizeImage(int width, int height);	
 
 	"""Calculates and draws lines with hough transform"""
-	virtual void calLines(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void applyHoughTransform(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
 	"""To calculate the skew angle of text in an image"""
-	virtual int computeSkew(const Mat src);
+	virtual int computeSkewOfTextInImage(const Mat src);
 
 	"""Finds and stores large isolated blobs within an image"""
-	virtual void findBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+	virtual void findAndStoreBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
 
 	"""Returns ratio of white content to black"""
-	virtual double getWhiteCount(Mat img);
+	virtual double getWhiteContentRatio(Mat img);
 
-	"""Initiates imfill(image, 'hole')"""
-	virtual void cvFillHoles(cv::Mat &input);
+	"""Fills the image with to contrast lines"""
+	virtual void fillHolesWithSpecifiedColor(cv::Mat &input);
 }
 
 class GPUProcessor : public Processor {
 	"""Displays the image in the specified window"""
-	virtual void display(GpuMat src);
+	virtual void displayImageInWindow(GpuMat src);
 
 	"""Applies affine transformation the src image contained in a GpuMat object given the angle of rotation"""
-	virtual void rotate(GpuMat src, GpuMat &dst, double angle);
+	virtual void rotateClockwise(double angle);
 	
 	"""Stores frames for averaging"""
-	virtual bool imageSum(GpuMat src, int size, vector<GpuMat> &Tarray);		
+	virtual bool storeFramesForAveraging(GpuMat src, int size, vector<GpuMat> &Tarray);		
 
 	"""Returns a GpuMat object with an image of a different resolution"""
-	virtual void resizeImage(GpuMat src, GpuMat &dst, int width, int height);
+	virtual void resizeImage(int width, int height);
 
 	"""Calculates and draws lines with hough transform"""
-	virtual void calLines(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	virtual void applyHoughTransform(GpuMat src, GpuMat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
 
 	"""To calculate the skew angle of text in an image"""
-	virtual int computeSkew(GpuMat src);
+	virtual int computeSkewTextInImage(GpuMat src);
 }
 
 class Camera {
@@ -157,24 +156,24 @@ class Camera {
 	Mat getImageFileInput();	
 
 	"""Initialise webcam with frame width and height"""
-	int initCamera(int width, int height);
+	int initCameraFrameSize(int width, int height);
 }
 
 class Networks {
 	"""Set the ACP header with given message"""
-	string setHeader(string message);
+	string setACPHeaderWithMessage(string message);
 
 	"""Create connection and test until one transmission succeeds"""
-	createConnection(char* defaultPort);
+	createConnectionWithACP(char* defaultPort);
 
 	"""Receive until peer closes connection"""
-	receiveData();
+	receiveDataFromACP();
 
 	"""Cleans up and closes connection"""
 	closeConnection();
 	
 	"""Storing the recognized text from page to the database"""
-	sendData(string message)
+	sendTextToACP(string message)
 	
 	"""To check if the data has been sent or not"""
 	bool sendError()
