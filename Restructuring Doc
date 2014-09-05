@@ -186,23 +186,6 @@ class Networks {
 }
 
 class Main {
-	
-	/* 
-	- obtain input
-	- process image
-	- store image in cache
-	- check with prev image if exists if actually flipped
-	- send to OCR
-	
-	- check page flip
-	-   if yes, check against prev stored image
-	-      if yes, delete prev stored image, repeat steps
-
-	- check for ebook
-	-   if exists, download page/book
-	-	store in db 
-	*/
-
 	// Begin image processing thread
 	Camera cam;
 	cam.initCamera(640, 360);	
@@ -234,12 +217,15 @@ class Main {
 			if(doc.hasFlipped(cam.image) || sendError()) {
 				doc.deleteCache();
 				page.OCR(cam.image);
-				string text = page.OCRtoString();
-				if(doc.EbookVersionExistOnline(text)) {  // TODO: refine the logic if the ebook has already been downloaded.
-					book = doc.downloadEBook();
-					text = extractTextFromEbook(page);
+				string sampleText = page.OCRtoString();
+				string pageText;
+				if(doc.EBookHasBeenDownloaded(sampleText)) {
+					pageText = doc.extractPageFromDownloadedEBook(sampleText);
+				} else if(doc.EBookVersionExistOnline(text)) { 
+					doc.downloadEBook();
+					pageText = doc.extractTextFromDownloadedEbook(sampleText);
 				} 
-				sendTextToACP(text);
+				sendTextToACP(pageText);
 			}
 		}		
 	}
