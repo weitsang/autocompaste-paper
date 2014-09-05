@@ -34,10 +34,16 @@ public:
 	void deleteCache();
 
 	"""If eBook exists, download specified page from ebook"""
-	Page downloadPage(String pageId);
+	Page downloadPageFromOnline(String sampleText);
 
 	"""If eBook exists, download eBook"""
-	void downloadBook();
+	void downloadEBook();
+
+	"""Returns true if the ebook has been downloaded"""
+	bool EBookHasBeenDownloaded(String sampleText);
+
+	"""If eBook has already been downloaded"""
+	Page extractPageFromDownloadedEBook(String sampleText);
 }
 
 class Page {
