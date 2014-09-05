@@ -214,7 +214,7 @@ class Main {
 		page.rotateClockwise(90);
 
 		if(imageIsFromCamera) {
-			if(doc.hasFlipped(cam.image) || sendError()) {
+			if(doc.hasFlipped(cam.image) || nwk.sendError()) {
 				doc.deleteCache();
 				page.OCR(cam.image);
 				string sampleText = page.OCRtoString();
@@ -225,8 +225,9 @@ class Main {
 					doc.downloadEBook();
 					pageText = doc.extractTextFromDownloadedEbook(sampleText);
 				} 
-				sendTextToACP(pageText);
+				
 			}
 		}		
 	}
+	nwk.sendTextToACP(pageText);
 }
