@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BA673B16-BD08-41BA-BC41-3EB06F17E00F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AutoComPasteV2</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>AFFF96AF-BE41-485C-9CEF-BE4B2D6FE3B2</key>
+		<string>https://github.com/RaghavRamesh/AutoComPaste-V2.git</string>
+		<key>C4D9B4BC-8EBB-4A9E-9115-F60139E7840F</key>
+		<string>ssh://github.com/weitsang/autocompaste-paper.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AutoComPasteV2/AutoComPasteV2.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>AFFF96AF-BE41-485C-9CEF-BE4B2D6FE3B2</key>
+		<string>../../../../AutoComPasteV2</string>
+		<key>C4D9B4BC-8EBB-4A9E-9115-F60139E7840F</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/weitsang/autocompaste-paper.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C4D9B4BC-8EBB-4A9E-9115-F60139E7840F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C4D9B4BC-8EBB-4A9E-9115-F60139E7840F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>autocompaste-paper</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>AFFF96AF-BE41-485C-9CEF-BE4B2D6FE3B2</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AutoComPasteV2</string>
+		</dict>
+	</array>
+</dict>
+</plist>
