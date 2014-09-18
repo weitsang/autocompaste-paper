@@ -10,8 +10,12 @@
 #define __AutoComPasteV2__Camera__
 
 #include <iostream>
+#include <opencv2/opencv.hpp>
 
+using namespace cv
+using namespace std
 
+class Camera{
 public:
 	//Initiate identifiers
 	Camera();
@@ -24,5 +28,6 @@ public:
 
 	//Initialise webcam with frame width and height
 	int initCameraFrameSize(int width, int height);
+};
 
 #endif /* defined(__AutoComPasteV2__Camera__) */
