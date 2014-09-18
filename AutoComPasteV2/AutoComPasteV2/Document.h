@@ -45,6 +45,6 @@ public:
 
 	//If eBook has already been downloaded
 	Page extractPageFromDownloadedEBook(String sampleText);
-}
+};
 
 #endif /* defined(__AutoComPasteV2__Document__) */
