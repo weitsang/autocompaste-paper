@@ -11,16 +11,18 @@
 
 #include <iostream>
 
-"""Initiate identifiers"""
-Camera();
 
-"""Returns a Mat object of a frame captured from webcam and converts to colour space - Corresponds to process_main() in imgpros"""
-Mat getWebCamInput();
+public:
+	//Initiate identifiers
+	Camera();
 
-"""Returns a Mat object of an image from a file"""
-Mat getImageFileInput();
+	//Returns a Mat object of a frame captured from webcam and converts to colour space - Corresponds to process_main() in imgpros
+	Mat getWebCamInput();
 
-"""Initialise webcam with frame width and height"""
-int initCameraFrameSize(int width, int height);
+	//Returns a Mat object of an image from a file
+	Mat getImageFileInput();
+
+	//Initialise webcam with frame width and height
+	int initCameraFrameSize(int width, int height);
 
 #endif /* defined(__AutoComPasteV2__Camera__) */
