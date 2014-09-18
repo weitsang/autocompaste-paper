@@ -13,6 +13,7 @@
 
 class Page {
 	Processor processor;
+	Mat pageImage;
 public:
 
 	//Initiate identifiers
