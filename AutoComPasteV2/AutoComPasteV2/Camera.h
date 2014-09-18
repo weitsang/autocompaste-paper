@@ -16,6 +16,11 @@ using namespace cv
 using namespace std
 
 class Camera{
+
+private:
+	VideoCapture webCam;
+	Mat inputImage;
+
 public:
 	//Initiate identifiers
 	Camera();
