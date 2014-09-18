@@ -14,7 +14,7 @@ Document :: Document()
          
 }
     
- bool Document :: EBookVersionExistsOnline(Page page) 
+ bool Document :: EBookVersionExistsOnline(String sampleText) 
  {
 	 // search online using the contents of the page and return a bool depending on whether the book exists or not.
  }

@@ -23,7 +23,7 @@ public:
 	Document();
 
 	//Returns true if an e-book version of the document is available online
-	bool EBookVersionExistOnline();
+	bool EBookVersionExistOnline(String sampleText);
 	
 	//Returns true if a page in the document as been flipped
 	bool hasFlipped(Page page1, Page page2);
