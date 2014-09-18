@@ -11,31 +11,40 @@
 
 #include <iostream>
 
-"""Displays the image in the specified window"""
-virtual void display(Mat src);
+class Document {
 
-"""Applies affine transformation the src image contained in a Mat object given the angle of rotation"""
-virtual void rotate(Mat src, Mat &dst, double angle);
+private:
+	Page current;
+	Page previous;
 
-"""Stores frames for averaging"""
-virtual bool storeFramesForAveraging(Mat src, int size, vector<Mat> &Tarray);
+public: 
 
-"""Returns a Mat object with an image of a different resolution"""
-virtual void resizeImage(int width, int height);
+	//Initiate identifiers
+	Document();
 
-"""Calculates and draws lines with hough transform"""
-virtual void applyHoughTransform(Mat src, Mat &dst, int threshold, unsigned int *nb, int thickness, double &Fangle, double acute);
+	//Returns true if an e-book version of the document is available online
+	bool EBookVersionExistOnline();
+	
+	//Returns true if a page in the document as been flipped
+	bool hasFlipped(Page page1, Page page2);
 
-"""To calculate the skew angle of text in an image"""
-virtual int computeSkewOfTextInImage(const Mat src);
+	//Store page temporarily
+	void storeFlippedPage(Page page));
+	
+	//Delete previously stored image(s)
+	void deleteCache();
 
-"""Finds and stores large isolated blobs within an image"""
-virtual void findAndStoreBlobs(const cv::Mat &binary, std::vector<std::vector<cv::Point2i>> &blobs);
+	//If eBook exists, download specified page from ebook
+	Page downloadPageFromOnline(String sampleText);
 
-"""Returns ratio of white content to black"""
-virtual double getWhiteContentRatio(Mat img);
+	//If eBook exists, download eBook
+	void downloadEBook();
 
-"""Fills the image with to contrast lines"""
-virtual void fillHolesWithSpecifiedColor(cv::Mat &input);
+	//Returns true if the ebook has been downloaded
+	bool EBookHasBeenDownloaded(String sampleText);
+
+	//If eBook has already been downloaded
+	Page extractPageFromDownloadedEBook(String sampleText);
+}
 
 #endif /* defined(__AutoComPasteV2__Document__) */
