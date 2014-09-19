@@ -42,3 +42,41 @@ int Page :: prepareImageForOCR(Mat image)
 	adaptiveThreshold(image, image, 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
 	return 1;
 }
+
+void Page :: recogniseTextUsingOCR(Mat img)
+{
+	TessBaseAPI = *tessapi
+	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+
+	if (api->Init(NULL, "eng"))	
+	{
+		printf("could not init tess\n");
+	}
+
+	api->SetPageSegMode(tesseract::PSM_AUTO_OSD);
+
+	cv::waitKey(100);
+
+	tessapi->SetImage((const unsigned char*)img.data,img.cols, img.rows,img.channels(), img.step);
+	tessapi->Recognize(NULL);
+
+	ResultIterator *ri = tessapi->GetIterator();
+	
+	if (ri != NULL)
+	{
+		textResult = "";
+		while (ri->Next(RIL_TEXTLINE)) 
+		{
+			textResult += ri->GetUTF8Text(RIL_TEXTLINE);
+		}
+
+		delete ri;
+
+	}
+
+}
+
+string Page :: OCRToString()
+{
+	return textResult;
+}

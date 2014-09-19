@@ -14,6 +14,7 @@
 class Page {
 	Processor processor;
 	Mat pageImage;
+	string textResult;
 public:
 
 	//Initiate identifiers
