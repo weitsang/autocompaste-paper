@@ -1,1 +1,3 @@
 /AutoComPasteV2.xcodeproj/*
+*.dylib
+*xcode*
