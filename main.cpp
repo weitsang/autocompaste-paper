@@ -128,94 +128,93 @@ void imgpro_t(void *param)
 {
     imgpros mypros;
 
-    int a=0;;
-    string filename=".jpg";
+    int a = 0;
+    string filename = ".jpg";
     
-    started= 0;
-    mypros.init_camera(640,360);
+    started = 0;
+    mypros.init_camera(640, 360);   
     Mat temp;
-    mypros.pimage = cvCreateImage(mypros.sizeres,IPL_DEPTH_8U,1);
-    mypros.summage = Mat::zeros(mypros.sizeres,CV_8UC1);
+    mypros.pimage = cvCreateImage(mypros.sizeres, IPL_DEPTH_8U, 1); // Creates an image header and allocates image data
+    mypros.summage = Mat::zeros(mypros.sizeres, CV_8UC1);
 
     vector<Mat> camera_stack;
 
-    //initialise
+    // Initialise imgpros object values
     mypros.nPasses = 15;
     mypros.gHeight = 640;
     mypros.gWidth = 360;
+
     while(1) 
     {
         started = cvWaitKey(20);
         WaitForSingleObject(angMutex, INFINITE);
         
-        while(camera_stack.size()<3){
+        while(camera_stack.size() < 3) {
+            // Capture an image from webcam
             mypros.process_main();
-            mypros.resizeimage(mypros.mattimage,mypros.mattimage,mypros.gHeight,mypros.gWidth);
-        
+
+            mypros.resizeimage(mypros.mattimage, mypros.mattimage, mypros.gHeight, mypros.gWidth);
+            
+            // Preparing for OCR
             mypros.process_image(mypros.mattimage);
             mypros.rotate(mypros.mattimage,mypros.mattimage,90);
-            
-
         
             camera_stack.push_back(mypros.mattimage);
 
         }
+
         ReleaseMutex(angMutex);
-    //  namedWindow("Output", CV_WINDOW_OPENGL| CV_WINDOW_AUTOSIZE);    //for  cuda support
-        imshow("Output",camera_stack.back());
+        //namedWindow("Output", CV_WINDOW_OPENGL| CV_WINDOW_AUTOSIZE);    //for  cuda support
+        imshow("Output", camera_stack.back());
         //cvWaitKey(20);
 
-        while(!camera_stack.empty())
-        {
-            if(mypros.compute_skew(camera_stack.back())||state == 32)
-            {
+        while(!camera_stack.empty()) {
+            // Check if page is flipped
+            if(mypros.compute_skew(camera_stack.back())||state == 32) {
                 
                 WaitForSingleObject(angMutex, INFINITE);
                 
-                //high res
-                mypros.init_camera(1920,1080);
+                // High res
+                mypros.init_camera(1920, 1080);
                 mypros.process_main();
                 
-                //transfer to thread2
+                // Transfer to thread2
                 mypros.process_image(mypros.mattimage);
-                mypros.rotate(mypros.mattimage,mattimage,90);
+                mypros.rotate(mypros.mattimage, mattimage, 90);
                 //imshow("highres",mattimage);
 
-                //low res
-                mypros.init_camera(640,360);
+                // Low res
+                mypros.init_camera(640, 360);
                 ReleaseMutex(angMutex);
-                cout<<"o=ocr"<<endl;
-                TerminateThread(thread2,0);
+                cout << "o=ocr" << endl;
+                TerminateThread(thread2, 0);
 
                 CloseHandle(thread2);
-                thread2=(HANDLE)_beginthread(OCR_t,0,NULL);
-                
+                thread2 = (HANDLE)_beginthread(OCR_t, 0, NULL);
             }
+
             camera_stack.pop_back();
-            if(state == 32)
-            {
-                while(!mypros.sumofarray.empty())
-                {
+
+            if(state == 32) {
+                while(!mypros.sumofarray.empty()) {
                     mypros.sumofarray.pop_back();
                 }
-                while(!camera_stack.empty())
-                {
+                while(!camera_stack.empty()) {
                     camera_stack.pop_back();
                 }
                 state = 0;
             }
         }
-
     }
 }
 
 
-int main(int argc,char* argv[])
+int main(int argc, char* argv[])
 {   
-    angMutex = CreateMutex( NULL, FALSE, NULL);   
-    thread1=(HANDLE)_beginthread(imgpro_t,0,NULL);
+    angMutex = CreateMutex( NULL, FALSE, NULL); // win api
+    thread1=(HANDLE)_beginthread(imgpro_t, 0, NULL);
 
-    cout<<gpu::getCudaEnabledDeviceCount();
+    cout << gpu::getCudaEnabledDeviceCount();
 
     cvWaitKey(300);
 

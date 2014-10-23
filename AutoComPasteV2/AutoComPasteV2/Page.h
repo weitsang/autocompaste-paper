@@ -38,5 +38,4 @@ public:
 	//Returns string result of OCR
 	string OCRToString();
 }
-
 #endif /* defined(__AutoComPasteV2__Page__) */

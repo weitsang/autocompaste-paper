@@ -55,7 +55,8 @@ using namespace std;
 
 class cam_Inst{
 private:
-    IplImage* image;                    //input image from webcam stored here
+    IplImage* image;                    //input image from webcam stored here 
+    // cvLoadImage provides a pointer to an IplImage, which means it creates an IplImage when it loads it and returns you it's emplacement.
     IplImage* pimage;
 
     Mat mattimage,temp,rotated;
@@ -66,7 +67,7 @@ private:
     int stop;
     unsigned nb_lines;
     //HANDLE angMutex,thread1,thread2;
-    //char started;
+    char started;
 
 
 public:
