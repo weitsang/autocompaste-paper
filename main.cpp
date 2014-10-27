@@ -57,9 +57,8 @@ void OCR_t(void *param)
 {
 
     tesseract::TessBaseAPI *api= new tesseract::TessBaseAPI();
-    if(api->Init(NULL, "eng"))
-    {
-            printf("could not init tess\n");
+    if(api->Init(NULL, "eng")) {
+        printf("could not init tess\n");
     } 
     api->SetPageSegMode(tesseract::PSM_AUTO_OSD);
     string mytext; 
@@ -86,30 +85,24 @@ void OCR_t(void *param)
     myOcr.OCR(img2);
 
             
-    string buffer =myOcr.all_text;
-    if(0){
-        for(set<string>::iterator setit=myOcr._dict_sent.begin(); setit!=myOcr._dict_sent.end();++setit)
-        {
-                
+    string buffer = myOcr.all_text;
+    if(0) {
+        for(set<string>::iterator setit=myOcr._dict_sent.begin(); setit!=myOcr._dict_sent.end();++setit) { 
             string temp = *setit;
-
             buffer +=  temp;
-
-
         }
     }
 
+    // If the extracted text does not contain any of the following characters, replace with <space>
     size_t nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
                 
-    while(nonalpha!=std::string::npos)
-    {
+    while(nonalpha!=std::string::npos) {
         buffer.at(nonalpha) = ' ';
         nonalpha = buffer.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
     }
             
-
-    if(mySock.connection("5566",mySock.toACP(buffer)))
-    {
+    // Send text to ACP
+    if(mySock.connection("5566",mySock.toACP(buffer))) {
         state = 3;
         cout<<endl<<"****send fail************"<<endl;
     }
@@ -118,7 +111,6 @@ void OCR_t(void *param)
 
     stop=1;
     printf("\n finish\n");
-        
 
     _endthread();
 
@@ -131,15 +123,19 @@ void imgpro_t(void *param)
     int a = 0;
     string filename = ".jpg";
     
+
     started = 0;
+
     mypros.init_camera(640, 360);   
     Mat temp;
     mypros.pimage = cvCreateImage(mypros.sizeres, IPL_DEPTH_8U, 1); // Creates an image header and allocates image data
+    // Summing images to take average later
     mypros.summage = Mat::zeros(mypros.sizeres, CV_8UC1);
 
     vector<Mat> camera_stack;
 
     // Initialise imgpros object values
+    // No of frames captured
     mypros.nPasses = 15;
     mypros.gHeight = 640;
     mypros.gWidth = 360;
@@ -167,21 +163,22 @@ void imgpro_t(void *param)
         //namedWindow("Output", CV_WINDOW_OPENGL| CV_WINDOW_AUTOSIZE);    //for  cuda support
         imshow("Output", camera_stack.back());
         //cvWaitKey(20);
-
+  
         while(!camera_stack.empty()) {
-            // Check if page is flipped
+            // Check if page has been flipped or if there is a network error
             if(mypros.compute_skew(camera_stack.back())||state == 32) {
                 
                 WaitForSingleObject(angMutex, INFINITE);
                 
-                // High res
+                // High res for OCR
                 mypros.init_camera(1920, 1080);
                 mypros.process_main();
                 
                 // Transfer to thread2
                 mypros.process_image(mypros.mattimage);
+                // Rotates 90 due to the initial position of page under webcam
                 mypros.rotate(mypros.mattimage, mattimage, 90);
-                //imshow("highres",mattimage);
+                //imshow("highres", mattimage);
 
                 // Low res
                 mypros.init_camera(640, 360);
@@ -195,6 +192,7 @@ void imgpro_t(void *param)
 
             camera_stack.pop_back();
 
+            // If network error, clear all images in the stack and set state to 0
             if(state == 32) {
                 while(!mypros.sumofarray.empty()) {
                     mypros.sumofarray.pop_back();
@@ -212,6 +210,7 @@ void imgpro_t(void *param)
 int main(int argc, char* argv[])
 {   
     angMutex = CreateMutex( NULL, FALSE, NULL); // win api
+    // Image processing thread
     thread1=(HANDLE)_beginthread(imgpro_t, 0, NULL);
 
     cout << gpu::getCudaEnabledDeviceCount();

@@ -124,20 +124,14 @@ void OCRer::OCR(Mat img)
 
     ResultIterator *ri = _tessapi->GetIterator();
     //return _tessapi->GetUTF8Text();
-
     
     if (ri != NULL) {
-
         all_text= "";
         while (ri->Next(RIL_TEXTLINE)) {
-        
             all_text += ri->GetUTF8Text(RIL_TEXTLINE);
         }
-
-        delete ri;
-        
+        delete ri;   
     }
-        
 };
 
 
