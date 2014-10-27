@@ -8,7 +8,7 @@
 
 #include "Camera.h"
 
-Camera::Camera(int width, int height) {
+Camera::Camera() {
 	webCam.release();
 	webCam.open(0);
     
@@ -16,14 +16,16 @@ Camera::Camera(int width, int height) {
 		printf("Unable to find webcam.\n");
 		getchar();
 	}
-    
-	webCam.set(CV_CAP_PROP_FRAME_WIDTH, width);
-	webCam.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+}
+
+void Camera :: setWebcamDimensions(int width, int height) {
+    webCam.set(CV_CAP_PROP_FRAME_WIDTH, width);
+    webCam.set(CV_CAP_PROP_FRAME_HEIGHT, height);
 }
 
 Mat Camera :: getWebCamInput() {
     webCam >> inputImage;
-    inputImage = inputImage + cv::Scalar(-100, -100, -100);
+    inputImage = inputImage;
     return inputImage;
 }
 

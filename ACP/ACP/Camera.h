@@ -15,14 +15,15 @@
 using namespace cv;
 using namespace std;
 
-class Camera{
+class Camera {
     
 private:
 	VideoCapture webCam;
 	Mat inputImage;
     
 public:
-	Camera(int width, int height);
+	Camera();
+    void setWebcamDimensions(int width, int height);
 	Mat getWebCamInput();
 	Mat getImageFileInput(string filepath);
 };
