@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
+#include <tesseract/baseapi.h>
 #include "Page.h"
 
 

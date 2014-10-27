@@ -44,11 +44,11 @@ void Processor::displayImage(Mat image) {
     imshow("Result", image);
 }
 
-void Processor::deskewImage(Mat img, double angle, Mat &rotated) {
-    cv::bitwise_not(img, img);
+void Processor::deskewImage(Mat image, double angle, Mat &rotated) {
+    cv::bitwise_not(image, image);
     std::vector<cv::Point> points;
-    cv::Mat_<uchar>::iterator iter = img.begin<uchar>();
-    cv::Mat_<uchar>::iterator end = img.end<uchar>();
+    cv::Mat_<uchar>::iterator iter = image.begin<uchar>();
+    cv::Mat_<uchar>::iterator end = image.end<uchar>();
     
     for (; iter != end; ++iter)
         if (*iter)
@@ -56,13 +56,13 @@ void Processor::deskewImage(Mat img, double angle, Mat &rotated) {
     
     cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
     cv::Mat rotatedMat = cv::getRotationMatrix2D(box.center, angle, 1);
-    cv::warpAffine(img, rotated, rotatedMat, img.size(), cv::INTER_CUBIC);
+    cv::warpAffine(image, rotated, rotatedMat, image.size(), cv::INTER_CUBIC);
     cv::Size boxSize = box.size;
-    if (box.angle < -45.)
+    if (box.angle < -45.f)
         std::swap(boxSize.width, boxSize.height);
     
     cv::Mat cropped;
     cv::getRectSubPix(rotated, boxSize, box.center, rotated);
     cv::bitwise_not(rotated, rotated);
-    std::cout << "deskewing" << std::endl;
+    std::cout << "Deskewing image.." << std::endl;
 }

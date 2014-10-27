@@ -16,7 +16,8 @@ int main(int argc, const char *argv[]) {
     // Image processing thread
     
     // Initialise camera
-    Camera cam(640, 360);
+    Camera cam;
+    cam.setWebcamDimensions(640, 360);
     
     // cv::imshow("Webcam", cam.getWebCamInput());
     // cv::imshow("Image", cam.getImageFileInput("/Users/raghav/Desktop/image.jpeg"));
