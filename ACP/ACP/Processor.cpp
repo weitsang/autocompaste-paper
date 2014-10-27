@@ -11,6 +11,9 @@
 using namespace cv;
 using namespace std;
 
+Processor::Processor() {
+    
+}
 
 void Processor::setPage(Page page) {
     this->page = page;

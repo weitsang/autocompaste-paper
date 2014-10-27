@@ -8,6 +8,9 @@
 
 #include "Page.h"
 
+Page::Page() {
+    
+}
     
 void Page::setSummage(Mat summage) {
     this->summage = summage;
