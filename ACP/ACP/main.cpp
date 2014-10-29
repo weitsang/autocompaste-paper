@@ -25,11 +25,11 @@ int main(int argc, const char *argv[]) {
     // Initialise Page parameters
     Page page;
     page.setSizeRes(cvSize(640, 360));
-    page.setImage(cvCreateImage(page.getSizeRes(), IPL_DEPTH_8U, 1));
+    page.setImageHeader(cvCreateImage(page.getSizeRes(), IPL_DEPTH_8U, 1));
     page.setSummage(Mat::zeros(page.getSizeRes(), CV_8UC1));
-    page.setGHeight(640);
-    page.setGWidth(360);
-    page.setNPasses(15);
+    page.setHeight(640);
+    page.setWidth(360);
+    page.setNumOfFrames(15);
     
     vector<Mat> cameraStack;
     
@@ -38,13 +38,29 @@ int main(int argc, const char *argv[]) {
             cam.getWebCamInput();
             Processor processor;
             processor.setPage(page);
-//            processor.resizeImage(, <#cv::Mat &dst#>, <#int width#>, <#int height#>);
             processor.resizeImage(page.getHeight(), page.getWidth());
             processor.prepareImageForOCR();
             processor.rotateImageClockwise(90);
-            
+            cameraStack.push_back(page.getImage());
+        }
+        
+        imshow("Output", cameraStack.back());
+        
+        while(!cameraStack.empty()) {
+            // Check if page has been flipped
+            // computeSkew()
         }
     }
+    
+    // OCR Thread
+    
+    // Initialise Tesseract
+    // Set initial parameters
+    // Perform OCR on processed image
+    // Store the text in a string
+    // Remove all characters other than alphanumerics and common symbols
+    
+    
     waitKey(0);
     
     return 0;
