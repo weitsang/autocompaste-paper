@@ -11,39 +11,48 @@
 Page::Page() {
     
 }
-    
-void Page::setSummage(Mat summage) {
-    this->summage = summage;
-}
 
-void Page::setImage(IplImage *image) {
+void Page::setImage(Mat image) {
     this->image = image;
 }
 
-void Page::setNPasses(int value) {
-    this->nPasses = value;
+void Page::setImageHeader(IplImage *imageHeader) {
+    this->imageHeader = imageHeader;
 }
-    
-void Page::setGHeight(int value) {
-    this->gHeight = value;
+
+void Page::setHeight(int value) {
+    this->height = value;
 }
-    
-void Page::setGWidth(int value) {
-    this->gWidth = value;
+
+void Page::setWidth(int value) {
+    this->width = value;
+}
+
+void Page::setNumOfFrames(int count) {
+    this->numOfFrames = count;
+}
+
+void Page::setSummage(Mat summage) {
+    this->summage = summage;
 }
 
 void Page::setSizeRes(CvSize value) {
     this->sizeRes = value;
 }
 
+
 CvSize Page::getSizeRes() {
     return sizeRes;
 }
 
-int Page::getGWidth() {
-    return this->gWidth;
+Mat Page::getImage() {
+    return this->image;
 }
 
-int Page::getGHeight() {
-    return this->gHeight;
+int Page::getWidth() {
+    return this->width;
+}
+
+int Page::getHeight() {
+    return this->height;
 }
