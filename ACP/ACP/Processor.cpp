@@ -19,32 +19,33 @@ void Processor::setPage(Page page) {
     this->page = page;
 }
 
-void Processor::resizeImage(cv::Mat src, cv::Mat &dst, int width, int height) {
-    if (src.size().width != page.getGWidth()) {
-        cv::resize(src, dst, page.getSizeRes(), 0, 0, cv::INTER_CUBIC);
+void Processor::resizeImage(int width, int height) {
+    if (page.getImage().size().width != page.getWidth()) {
+        cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, cv::INTER_CUBIC);
     } else {
-        src.copyTo(dst);
+        page.getImage().copyTo(page.getImage());
     }
 }
 
-int Processor::prepareImageForOCR(cv::Mat image) {
-    cv::GaussianBlur(image, image, Size(3, 3), 0, 0);
-    cv::adaptiveThreshold(image, image, 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
+int Processor::prepareImageForOCR() {
+    cv::GaussianBlur(page.getImage(), page.getImage(), Size(3, 3), 0, 0);
+    cv::adaptiveThreshold(page.getImage(), page.getImage(), 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
     return 1;
 }
 
-void Processor::rotateImageClockwise(cv::Mat src, cv::Mat &dst, double angle) {
-    Size srcSize = src.size();
+void Processor::rotateImageClockwise(double angle) {
+    Size srcSize = page.getImage().size();
     Size dstSize(srcSize.height, srcSize.width);
     
-    int len = std::max<int>(src.cols, src.rows);
+    int len = std::max<int>(page.getImage().cols, page.getImage().rows);
     Point2f center(len/2., len/2.);
     Mat rotatedMat = cv::getRotationMatrix2D(center, angle, 1.0);
-    warpAffine(src, dst, rotatedMat, dstSize);
 }
 
+// Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);
+    warpAffine(page.getImage(), page.getImage(), rotatedMat, dstSize);
 }
 
 void Processor::deskewImage(Mat image, double angle, Mat &rotated) {

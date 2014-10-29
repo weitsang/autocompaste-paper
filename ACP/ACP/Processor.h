@@ -25,9 +25,10 @@ private:
 public:
     Processor();
     void setPage(Page newPage);
-    void resizeImage(Mat src, Mat&dst, int width, int height);
-    int prepareImageForOCR(Mat image);
-    void rotateImageClockwise(Mat src, Mat &dst, double angle);
+    void resizeImage(int width, int height);
+    int prepareImageForOCR();
+    void rotateImageClockwise(double angle);
+    
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
     void deskewImage(Mat img, double angle, Mat &rotated);

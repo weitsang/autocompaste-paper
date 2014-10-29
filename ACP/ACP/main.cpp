@@ -39,6 +39,9 @@ int main(int argc, const char *argv[]) {
             Processor processor;
             processor.setPage(page);
 //            processor.resizeImage(, <#cv::Mat &dst#>, <#int width#>, <#int height#>);
+            processor.resizeImage(page.getHeight(), page.getWidth());
+            processor.prepareImageForOCR();
+            processor.rotateImageClockwise(90);
             
         }
     }
