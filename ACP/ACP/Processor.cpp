@@ -42,10 +42,36 @@ void Processor::rotateImageClockwise(double angle) {
     Mat rotatedMat = cv::getRotationMatrix2D(center, angle, 1.0);
 }
 
+void Processor::initialiseTesseractAPI() {
+    tessAPI = new tesseract::TessBaseAPI();
+    if(tessAPI->Init(NULL, "eng")) {
+        cout << "Could not initialise Tesseract." << endl;
+    }
+}
+
+string Processor::extractTextFromImage() {
+    initialiseTesseractAPI();
+    string text;
+    tessAPI->SetImage(page.getImage().data, page.getImage().cols, page.getImage().rows,
+                      page.getImage().channels(), page.getImage().step);
+    text = tessAPI->GetUTF8Text();
+    tessAPI->End();
+    return text;
+}
+
+void Processor::replaceUnwantedCharactersWithSpace(string text) {
+    size_t nonalpha = text.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+    
+    while(nonalpha!=std::string::npos) {
+        text.at(nonalpha) = ' ';
+        nonalpha = text.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+    }
+}
+
 // Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);
-    warpAffine(page.getImage(), page.getImage(), rotatedMat, dstSize);
+//    warpAffine(page.getImage(), page.getImage(), rotatedMat, dstSize);
 }
 
 void Processor::deskewImage(Mat image, double angle, Mat &rotated) {

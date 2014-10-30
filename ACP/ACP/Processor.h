@@ -22,6 +22,7 @@ using namespace std;
 class Processor {
 private:
     Page page;
+    tesseract::TessBaseAPI *tessAPI;
 public:
     Processor();
     void setPage(Page newPage);
@@ -32,5 +33,9 @@ public:
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
     void deskewImage(Mat img, double angle, Mat &rotated);
+    
+    void initialiseTesseractAPI();
+    string extractTextFromImage();
+    void replaceUnwantedCharactersWithSpace(string text);
 };
 #endif /* defined(__ACP__Processor__) */
