@@ -32,8 +32,8 @@ void Page::setNumOfFrames(int count) {
     this->numOfFrames = count;
 }
 
-void Page::setSummage(Mat summage) {
-    this->summage = summage;
+void Page::setSumOfImages(Mat sumOfImages) {
+    this->sumOfImages = sumOfImages;
 }
 
 void Page::setSizeRes(CvSize value) {

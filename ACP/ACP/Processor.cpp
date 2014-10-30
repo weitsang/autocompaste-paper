@@ -21,7 +21,7 @@ void Processor::setPage(Page page) {
 
 void Processor::resizeImage(int width, int height) {
     if (page.getImage().size().width != page.getWidth()) {
-        cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, cv::INTER_CUBIC);
+        cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, INTER_CUBIC);
     } else {
         page.getImage().copyTo(page.getImage());
     }
@@ -37,9 +37,9 @@ void Processor::rotateImageClockwise(double angle) {
     Size srcSize = page.getImage().size();
     Size dstSize(srcSize.height, srcSize.width);
     
-    int len = std::max<int>(page.getImage().cols, page.getImage().rows);
+    int len = max<int>(page.getImage().cols, page.getImage().rows);
     Point2f center(len/2., len/2.);
-    Mat rotatedMat = cv::getRotationMatrix2D(center, angle, 1.0);
+    page.setImage(getRotationMatrix2D(center, angle, 1.0));
 }
 
 void Processor::initialiseTesseractAPI() {
@@ -60,11 +60,12 @@ string Processor::extractTextFromImage() {
 }
 
 void Processor::replaceUnwantedCharactersWithSpace(string text) {
-    size_t nonalpha = text.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+    string allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ";
+    size_t nonalpha = text.find_first_not_of(allowedCharacters);
     
-    while(nonalpha!=std::string::npos) {
+    while(nonalpha != string::npos) {
         text.at(nonalpha) = ' ';
-        nonalpha = text.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ");
+        nonalpha = text.find_first_not_of(allowedCharacters);
     }
 }
 
@@ -75,24 +76,24 @@ void Processor::displayImage(Mat image) {
 }
 
 void Processor::deskewImage(Mat image, double angle, Mat &rotated) {
-    cv::bitwise_not(image, image);
-    std::vector<cv::Point> points;
-    cv::Mat_<uchar>::iterator iter = image.begin<uchar>();
-    cv::Mat_<uchar>::iterator end = image.end<uchar>();
+    bitwise_not(image, image);
+    vector<Point> points;
+    Mat_<uchar>::iterator iter = image.begin<uchar>();
+    Mat_<uchar>::iterator end = image.end<uchar>();
     
     for (; iter != end; ++iter)
         if (*iter)
             points.push_back(iter.pos());
     
-    cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
-    cv::Mat rotatedMat = cv::getRotationMatrix2D(box.center, angle, 1);
-    cv::warpAffine(image, rotated, rotatedMat, image.size(), cv::INTER_CUBIC);
-    cv::Size boxSize = box.size;
+    RotatedRect box = minAreaRect(Mat(points));
+    Mat rotatedMat = getRotationMatrix2D(box.center, angle, 1);
+    warpAffine(image, rotated, rotatedMat, image.size(), INTER_CUBIC);
+    Size boxSize = box.size;
     if (box.angle < -45.f)
-        std::swap(boxSize.width, boxSize.height);
+        swap(boxSize.width, boxSize.height);
     
-    cv::Mat cropped;
-    cv::getRectSubPix(rotated, boxSize, box.center, rotated);
-    cv::bitwise_not(rotated, rotated);
-    std::cout << "Deskewing image.." << std::endl;
+    Mat cropped;
+    getRectSubPix(rotated, boxSize, box.center, rotated);
+    bitwise_not(rotated, rotated);
+    cout << "Deskewing image.." << endl;
 }

@@ -23,6 +23,7 @@ class Processor {
 private:
     Page page;
     tesseract::TessBaseAPI *tessAPI;
+    
 public:
     Processor();
     void setPage(Page newPage);

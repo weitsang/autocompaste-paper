@@ -25,7 +25,6 @@ void Camera :: setWebcamDimensions(int width, int height) {
 
 Mat Camera :: getWebCamInput() {
     webCam >> inputImage;
-    inputImage = inputImage;
     return inputImage;
 }
 

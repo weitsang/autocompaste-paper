@@ -19,9 +19,9 @@ using namespace std;
 class Page {
 
 private:
-    IplImage *imageHeader; // Stores camera/image input
+    IplImage *imageHeader;
     Mat image;
-    Mat summage;
+    Mat sumOfImages;
     int width;
     int height;
     int numOfFrames;
@@ -35,7 +35,7 @@ public:
     void setWidth(int width);
     void setHeight(int height);
     
-    void setSummage(Mat summage);
+    void setSumOfImages(Mat sumOfImages);
     void setNumOfFrames(int count);
     
     void setSizeRes(CvSize value);

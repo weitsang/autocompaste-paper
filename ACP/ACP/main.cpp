@@ -26,7 +26,7 @@ int main(int argc, const char *argv[]) {
     Page page;
     page.setSizeRes(cvSize(640, 360));
     page.setImageHeader(cvCreateImage(page.getSizeRes(), IPL_DEPTH_8U, 1));
-    page.setSummage(Mat::zeros(page.getSizeRes(), CV_8UC1));
+    page.setSumOfImages(Mat::zeros(page.getSizeRes(), CV_8UC1));
     page.setHeight(640);
     page.setWidth(360);
     page.setNumOfFrames(15);
