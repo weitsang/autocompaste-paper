@@ -33,10 +33,12 @@ int main(int argc, const char *argv[]) {
     
     vector<Mat> cameraStack;
     
+    Processor processor;
+    
     while (1) {
         while (cameraStack.size() < 3) {
             cam.getWebCamInput();
-            Processor processor;
+
             processor.setPage(page);
             processor.resizeImage(page.getHeight(), page.getWidth());
             processor.prepareImageForOCR();
@@ -53,12 +55,8 @@ int main(int argc, const char *argv[]) {
     }
     
     // OCR Thread
-    
-    // Initialise Tesseract
-    // Set initial parameters
-    // Perform OCR on processed image
-    // Store the text in a string
-    // Remove all characters other than alphanumerics and common symbols
+    string output = processor.extractTextFromImage();
+    processor.replaceUnwantedCharactersWithSpace(output);
     
     
     waitKey(0);
