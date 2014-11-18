@@ -26,9 +26,9 @@ private:
     
 public:
     Processor();
-    void setPage(Page newPage);
+    void setPage(Page page);
     void resizeImage(int width, int height);
-    int prepareImageForOCR();
+    void prepareImageForOCR();
     void rotateImageClockwise(double angle);
     
     void displayImage(Mat image);

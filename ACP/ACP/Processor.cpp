@@ -27,10 +27,9 @@ void Processor::resizeImage(int width, int height) {
     }
 }
 
-int Processor::prepareImageForOCR() {
+void Processor::prepareImageForOCR() {
     cv::GaussianBlur(page.getImage(), page.getImage(), Size(3, 3), 0, 0);
     cv::adaptiveThreshold(page.getImage(), page.getImage(), 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
-    return 1;
 }
 
 void Processor::rotateImageClockwise(double angle) {
