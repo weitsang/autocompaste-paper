@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <tesseract/baseapi.h>
 #include "Camera.h"
 #include "Page.h"
 #include "Processor.h"
