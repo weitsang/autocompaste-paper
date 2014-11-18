@@ -14,26 +14,24 @@
 
 int main(int argc, const char *argv[]) {
     
-    // Image processing thread
-    
-    // Initialise camera
+    // Initialise Camera
     Camera cam;
-    cam.setWebcamDimensions(640, 360);
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
     
-    // cv::imshow("Webcam", cam.getWebCamInput());
-    // cv::imshow("Image", cam.getImageFileInput("/Users/raghav/Desktop/image.jpeg"));
-
     // Initialise Page parameters
     Page page;
+    page.setImage(image);
     
+    // Process image
     Processor processor;
+    processor.setPage(page);
+    processor.prepareImageForOCR();
     
-    // OCR Thread
+    // Send to OCR
     string output = processor.extractTextFromImage();
     processor.replaceUnwantedCharactersWithSpace(output);
     
-    
-    waitKey(0);
+    cout << output << endl;
     
     return 0;
 }
