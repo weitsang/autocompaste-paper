@@ -25,35 +25,8 @@ int main(int argc, const char *argv[]) {
 
     // Initialise Page parameters
     Page page;
-    page.setSizeRes(cvSize(640, 360));
-    page.setImageHeader(cvCreateImage(page.getSizeRes(), IPL_DEPTH_8U, 1));
-    page.setSumOfImages(Mat::zeros(page.getSizeRes(), CV_8UC1));
-    page.setHeight(640);
-    page.setWidth(360);
-    page.setNumOfFrames(15);
-    
-    vector<Mat> cameraStack;
     
     Processor processor;
-    
-    while (1) {
-        while (cameraStack.size() < 3) {
-            cam.getWebCamInput();
-
-            processor.setPage(page);
-            processor.resizeImage(page.getHeight(), page.getWidth());
-            processor.prepareImageForOCR();
-            processor.rotateImageClockwise(90);
-            cameraStack.push_back(page.getImage());
-        }
-        
-        imshow("Output", cameraStack.back());
-        
-        while(!cameraStack.empty()) {
-            // Check if page has been flipped
-            // computeSkew()
-        }
-    }
     
     // OCR Thread
     string output = processor.extractTextFromImage();
