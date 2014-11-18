@@ -29,6 +29,6 @@ Mat Camera :: getWebCamInput() {
 }
 
 Mat Camera :: getImageFileInput(string filepath) {
-	inputImage = imread(filepath);
+	inputImage = imread(filepath, CV_LOAD_IMAGE_GRAYSCALE);
 	return inputImage;
 }
