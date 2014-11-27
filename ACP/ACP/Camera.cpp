@@ -9,22 +9,21 @@
 #include "Camera.h"
 
 Camera::Camera() {
-	webCam.release();
-	webCam.open(0);
+	camera.release();
+	camera.open(0);
     
-	if (!webCam.isOpened()) {
-		printf("Unable to find webcam.\n");
-		getchar();
+	if (!camera.isOpened()) {
+		printf("Unable to find video capture device..\n");
 	}
 }
 
-void Camera :: setWebcamDimensions(int width, int height) {
-    webCam.set(CV_CAP_PROP_FRAME_WIDTH, width);
-    webCam.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+void Camera :: setCameraDimensions(int width, int height) {
+    camera.set(CV_CAP_PROP_FRAME_WIDTH, width);
+    camera.set(CV_CAP_PROP_FRAME_HEIGHT, height);
 }
 
-Mat Camera :: getWebCamInput() {
-    webCam >> inputImage;
+Mat Camera :: getCameraInput() {
+    camera >> inputImage;
     return inputImage;
 }
 

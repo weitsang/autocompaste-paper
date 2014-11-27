@@ -16,16 +16,16 @@ void Page::setImage(Mat image) {
     this->image = image;
 }
 
-void Page::setImageHeader(IplImage *imageHeader) {
-    this->imageHeader = imageHeader;
+Mat Page::getImage() {
+    return this->image;
 }
 
-void Page::setHeight(int value) {
-    this->height = value;
+void Page::setSizeRes(CvSize value) {
+    this->sizeRes = value;
 }
 
-void Page::setWidth(int value) {
-    this->width = value;
+CvSize Page::getSizeRes() {
+    return sizeRes;
 }
 
 void Page::setNumOfFrames(int count) {
@@ -34,25 +34,4 @@ void Page::setNumOfFrames(int count) {
 
 void Page::setSumOfImages(Mat sumOfImages) {
     this->sumOfImages = sumOfImages;
-}
-
-void Page::setSizeRes(CvSize value) {
-    this->sizeRes = value;
-}
-
-
-CvSize Page::getSizeRes() {
-    return sizeRes;
-}
-
-Mat Page::getImage() {
-    return this->image;
-}
-
-int Page::getWidth() {
-    return this->width;
-}
-
-int Page::getHeight() {
-    return this->height;
 }

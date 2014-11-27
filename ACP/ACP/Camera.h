@@ -15,16 +15,17 @@
 using namespace cv;
 using namespace std;
 
+
 class Camera {
     
 private:
-	VideoCapture webCam;
+	VideoCapture camera;
 	Mat inputImage;
     
 public:
 	Camera();
-    void setWebcamDimensions(int width, int height);
-	Mat getWebCamInput();
+    void setCameraDimensions(int width, int height);
+	Mat getCameraInput();
 	Mat getImageFileInput(string filepath);
 };
 

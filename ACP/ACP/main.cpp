@@ -14,7 +14,6 @@
 
 int main(int argc, const char *argv[]) {
     
-    // Initialise Camera
     Camera cam;
     Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
     

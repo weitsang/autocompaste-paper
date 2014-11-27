@@ -19,11 +19,11 @@ using namespace std;
 class Page {
 
 private:
-    IplImage *imageHeader;
+    // Image parameters
     Mat image;
+    int imageWidth;
+    int imageHeight;
     Mat sumOfImages;
-    int width;
-    int height;
     int numOfFrames;
     CvSize sizeRes;
 
@@ -31,19 +31,13 @@ public:
     Page();
     
     void setImage(Mat image);
-    void setImageHeader(IplImage *imageHeader);
-    void setWidth(int width);
-    void setHeight(int height);
+    Mat getImage();
+    
+    void setSizeRes(CvSize value);
+    CvSize getSizeRes();
     
     void setSumOfImages(Mat sumOfImages);
     void setNumOfFrames(int count);
-    
-    void setSizeRes(CvSize value);
-    
-    CvSize getSizeRes();
-    Mat getImage();
-    int getWidth();
-    int getHeight();
     
     void resizeImage(Mat src, Mat &dst);
 };
