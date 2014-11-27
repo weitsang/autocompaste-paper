@@ -19,6 +19,10 @@ void Processor::setPage(Page page) {
     this->page = page;
 }
 
+Page Processor::getPage() {
+    return page;
+}
+
 void Processor::resizeImage(int width, int height) {
     if (page.getImage().size().width != page.getWidth()) {
         cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, INTER_CUBIC);
