@@ -24,7 +24,8 @@ Page Processor::getPage() {
 }
 
 void Processor::resizeImage(int width, int height) {
-    if (page.getImage().size().width != page.getWidth()) {
+    
+    if (page.getImage().size().width != width) {
         cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, INTER_CUBIC);
     } else {
         page.getImage().copyTo(page.getImage());
