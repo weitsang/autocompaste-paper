@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv/highgui.h>
+#include "opencv2/highgui/highgui.hpp"
 #include <tesseract/baseapi.h>
 #include "Page.h"
 
@@ -32,6 +35,7 @@ public:
     void resizeImage(int width, int height);
     void prepareImageForOCR();
     void rotateImageClockwise(double angle);
+    void erodeImage(int, void*);
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);

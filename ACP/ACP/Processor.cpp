@@ -73,6 +73,15 @@ void Processor::replaceUnwantedCharactersWithSpace(string text) {
     }
 }
 
+void Processor::erodeImage(int, void*) {
+    int erosionType = MORPH_RECT;
+    int erosionSize = 10;
+    Mat element = getStructuringElement(erosionType, Size(2*erosionSize+1, 2*erosionSize+1), Point(erosionSize, erosionSize));
+    
+    cv::erode(this->getPage().getImage(), this->getPage().getImage(), element);
+    imshow("Erosion", this->getPage().getImage());
+}
+
 // Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);

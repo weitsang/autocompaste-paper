@@ -15,7 +15,10 @@
 int main(int argc, const char *argv[]) {
     
     Camera cam;
-    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/2.jpg");
+    
+    // Erode paragraphs
+    
     
     // Initialise Page parameters
     Page page;
@@ -25,6 +28,8 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     processor.prepareImageForOCR();
+    processor.erodeImage(0, 0);
+    cv::waitKey(0);
     
     // Send to OCR
     string output = processor.extractTextFromImage();
