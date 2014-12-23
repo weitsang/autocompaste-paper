@@ -29,6 +29,7 @@ int main(int argc, const char *argv[]) {
     processor.setPage(page);
     processor.prepareImageForOCR();
     processor.erodeImage(0, 0);
+    processor.drawContours(0, 0);
     cv::waitKey(0);
     
     // Send to OCR

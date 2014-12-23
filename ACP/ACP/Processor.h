@@ -36,6 +36,7 @@ public:
     void prepareImageForOCR();
     void rotateImageClockwise(double angle);
     void erodeImage(int, void*);
+    void drawContours(int, void*);
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
