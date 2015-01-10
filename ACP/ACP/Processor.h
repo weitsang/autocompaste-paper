@@ -36,6 +36,7 @@ public:
     void prepareImageForOCR();
     void rotateImageClockwise(double angle);
     void erodeImage(int, void*);
+    vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
     
     void displayImage(Mat image);

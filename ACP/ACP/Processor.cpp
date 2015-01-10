@@ -75,11 +75,11 @@ void Processor::replaceUnwantedCharactersWithSpace(string text) {
 
 void Processor::erodeImage(int, void*) {
     int erosionType = MORPH_RECT;
-    int erosionSize = 10;
+    int erosionSize = 13;
     Mat element = getStructuringElement(erosionType, Size(2*erosionSize+1, 2*erosionSize+1), Point(erosionSize, erosionSize));
     
     cv::erode(this->getPage().getImage(), this->getPage().getImage(), element);
-//    imshow("Erosion", this->getPage().getImage());
+    imshow("Erosion", this->getPage().getImage());
 }
 
 void Processor::drawContours(int, void *) {
@@ -114,12 +114,36 @@ void Processor::drawContours(int, void *) {
         cv::Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
         cv::drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
         rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+        cout << "Color:" << color << endl;
 //        circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
     }
     
     /// Show in a window
     namedWindow("Contours", CV_WINDOW_AUTOSIZE);
     imshow("Contours", drawing);
+}
+
+vector<Rect> Processor::detectLetters(cv::Mat img)
+{
+    std::vector<cv::Rect> boundRect;
+    cv::Mat img_gray, img_sobel, img_threshold, element;
+    cvtColor(img, img_gray, CV_BGR2GRAY);
+    cv::Sobel(img_gray, img_sobel, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::threshold(img_sobel, img_threshold, 0, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
+    element = getStructuringElement(cv::MORPH_RECT, cv::Size(17, 3) );
+    cv::morphologyEx(img_threshold, img_threshold, CV_MOP_CLOSE, element); //Does the trick
+    std::vector< std::vector< cv::Point> > contours;
+    cv::findContours(img_threshold, contours, 0, 1);
+    std::vector<std::vector<cv::Point> > contours_poly( contours.size() );
+    for( int i = 0; i < contours.size(); i++ )
+        if (contours[i].size()>100)
+        {
+            cv::approxPolyDP( cv::Mat(contours[i]), contours_poly[i], 3, true );
+            cv::Rect appRect( boundingRect( cv::Mat(contours_poly[i]) ));
+            if (appRect.width>appRect.height)
+                boundRect.push_back(appRect);
+        }
+    return boundRect;
 }
 
 // Unused

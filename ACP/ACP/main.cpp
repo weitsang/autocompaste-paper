@@ -27,17 +27,37 @@ int main(int argc, const char *argv[]) {
     // Process image
     Processor processor;
     processor.setPage(page);
-    processor.prepareImageForOCR();
-    processor.erodeImage(0, 0);
-    processor.drawContours(0, 0);
+//// Erode image
+//    processor.erodeImage(0, 0);
+//    
+//// Draw contours
+//    processor.drawContours(0, 0);
+
+// Cutting image
+    // Read
+    Mat img1 = imread("/Users/raghav/Desktop/2.jpg");
+    
+    // Detect
+    vector<cv::Rect> letterBBoxes1 = processor.detectLetters(img1);
+    
+    // Display
+    for (int i = 0; i < letterBBoxes1.size(); i++) {
+        rectangle(img1, letterBBoxes1[i], cv::Scalar(0,255,0),3,8,0);
+    }
+
+    namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+    imshow("Contours", img1);
     cv::waitKey(0);
     
-    // Send to OCR
-    string output = processor.extractTextFromImage();
-    processor.replaceUnwantedCharactersWithSpace(output);
+//    processor.prepareImageForOCR();
     
-    cout << output << endl;
+//    // Send to OCR
+//    string output = processor.extractTextFromImage();
+//    processor.replaceUnwantedCharactersWithSpace(output);
     
+//    cout << output << endl;
+//    processor.resizeImage(600, 400);
+//    cout << processor.getPage().getImage().size().width << endl;
     return 0;
 }
 
