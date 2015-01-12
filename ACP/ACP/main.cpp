@@ -27,6 +27,10 @@ int main(int argc, const char *argv[]) {
     // Process image
     Processor processor;
     processor.setPage(page);
+    
+    // Find white lines
+    processor.findWhiteLines();
+    
 //// Erode image
 //    processor.erodeImage(0, 0);
 //    

@@ -38,6 +38,7 @@ public:
     void erodeImage(int, void*);
     vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
+    void findWhiteLines();
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
