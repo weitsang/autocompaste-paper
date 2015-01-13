@@ -159,6 +159,22 @@ void Processor::findWhiteLines() {
     }
 }
 
+vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
+    Mat bigImage = page.getImage();
+    Mat smallImage = Mat(bigImage, Rect(0, 0, x_coord, y_coord));
+    
+    Size smallSize(x_coord, y_coord);
+    vector<Mat> smallImages;
+    
+    for (int y = 0; y < bigImage.rows; y += smallSize.height) {
+        for (int x = 0; x < bigImage.cols; x += smallSize.width) {
+            Rect rect = Rect(x, y, smallSize.width, smallSize.height);
+            smallImages.push_back(Mat(bigImage, rect));
+        }
+    }
+    return smallImages;
+}
+
 // Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);

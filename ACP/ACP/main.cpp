@@ -15,7 +15,7 @@
 int main(int argc, const char *argv[]) {
     
     Camera cam;
-    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/2.jpg");
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
     
     // Erode paragraphs
     
@@ -28,31 +28,35 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     
-    // Find white lines
-    processor.findWhiteLines();
+//    // Find white lines
+//    processor.findWhiteLines();
     
-//// Erode image
+//    // Erode image - creates blobs in place of paragraphs
 //    processor.erodeImage(0, 0);
-//    
-//// Draw contours
+//
+//    // Draw contours - draws boundaries around each letter, and makes the background black - less desirable
 //    processor.drawContours(0, 0);
 
-// Cutting image
-    // Read
-    Mat img1 = imread("/Users/raghav/Desktop/2.jpg");
+//    // Cutting image(Not really) - draws boundaries around characters in a line - more desirable
+//    // Read
+//    Mat img1 = imread("/Users/raghav/Desktop/2.jpg");
+//    
+//    // Detect
+//    vector<cv::Rect> letterBBoxes1 = processor.detectLetters(img1);
+//    
+//    // Display
+//    for (int i = 0; i < letterBBoxes1.size(); i++) {
+//        rectangle(img1, letterBBoxes1[i], cv::Scalar(0,255,0),3,8,0);
+//    }
+//
+//    namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+//    imshow("Contours", img1);
     
-    // Detect
-    vector<cv::Rect> letterBBoxes1 = processor.detectLetters(img1);
-    
-    // Display
-    for (int i = 0; i < letterBBoxes1.size(); i++) {
-        rectangle(img1, letterBBoxes1[i], cv::Scalar(0,255,0),3,8,0);
-    }
-
-    namedWindow("Contours", CV_WINDOW_AUTOSIZE);
-    imshow("Contours", img1);
+    // Cut image
+    vector<Mat> images = processor.cutImage(230, 110);
+    imshow("First small image", images[0]);
     cv::waitKey(0);
-    
+
 //    processor.prepareImageForOCR();
     
 //    // Send to OCR

@@ -39,6 +39,7 @@ public:
     vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
     void findWhiteLines();
+    vector<Mat> cutImage(int x_coord, int y_coord);
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
