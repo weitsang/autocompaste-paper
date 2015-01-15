@@ -35,10 +35,10 @@ public:
     void resizeImage(int width, int height);
     void prepareImageForOCR();
     void rotateImageClockwise(double angle);
-    void erodeImage(int, void*);
+    Mat erodeImage(int, void*);
     vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
-    void findWhiteLines();
+    void findWhiteLines(Mat img);
     vector<Mat> cutImage(int x_coord, int y_coord);
     
     void displayImage(Mat image);
