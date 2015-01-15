@@ -17,9 +17,6 @@ int main(int argc, const char *argv[]) {
     Camera cam;
     Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
     
-    // Erode paragraphs
-    
-    
     // Initialise Page parameters
     Page page;
     page.setImage(image);
@@ -28,11 +25,15 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     
-//    // Find white lines
-//    processor.findWhiteLines();
+    // Erode image - creates blobs in place of paragraphs
+    image = processor.erodeImage(0, 0);
     
-//    // Erode image - creates blobs in place of paragraphs
-//    processor.erodeImage(0, 0);
+    // Find white lines
+    processor.findWhiteLines(image);
+
+    cv::line(image, cv::Point(0, 16), cv::Point(690, 16), cv::Scalar(0, 0, 200), 2, CV_AA);
+    imshow("Show", image);
+    cout << "Image size: " << image.size() << endl;
 //
 //    // Draw contours - draws boundaries around each letter, and makes the background black - less desirable
 //    processor.drawContours(0, 0);
@@ -52,9 +53,9 @@ int main(int argc, const char *argv[]) {
 //    namedWindow("Contours", CV_WINDOW_AUTOSIZE);
 //    imshow("Contours", img1);
     
-    // Cut image
-    vector<Mat> images = processor.cutImage(230, 110);
-    imshow("First small image", images[0]);
+//    // Cut image
+//    vector<Mat> images = processor.cutImage(230, 110);
+//    imshow("First small image", images[0]);
     cv::waitKey(0);
 
 //    processor.prepareImageForOCR();
