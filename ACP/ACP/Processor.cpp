@@ -146,8 +146,7 @@ vector<Rect> Processor::detectLetters(cv::Mat img)
     return boundRect;
 }
 
-void Processor::findWhiteLines() {
-    Mat img = page.getImage();
+void Processor::findWhiteLines(Mat img) {
     
     for (int i = 0; i < img.rows - 1; i++) {
         Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
