@@ -25,19 +25,21 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     
+    // Dilate image - remove blemishes
+    image = processor.dilateImage(0, 0);
     // Erode image - creates blobs in place of paragraphs
     image = processor.erodeImage(0, 0);
     
     // Find white lines
-    processor.findWhiteLines(image);
+//    processor.findWhiteLines(image);
 
-    cv::line(image, cv::Point(0, 16), cv::Point(690, 16), cv::Scalar(0, 0, 200), 2, CV_AA);
+//    cv::line(image, cv::Point(0, 16), cv::Point(690, 16), cv::Scalar(0, 0, 200), 2, CV_AA);
     imshow("Show", image);
-    cout << "Image size: " << image.size() << endl;
-//
+//    cout << "Image size: " << image.size() << endl;
+
 //    // Draw contours - draws boundaries around each letter, and makes the background black - less desirable
 //    processor.drawContours(0, 0);
-    imshow("Borders", image);
+//    imshow("Borders", image);
 //    // Cutting image(Not really) - draws boundaries around characters in a line - more desirable
 //    // Read
 //    Mat img1 = imread("/Users/raghav/Desktop/2.jpg");

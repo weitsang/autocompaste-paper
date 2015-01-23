@@ -81,6 +81,19 @@ Mat Processor::erodeImage(int, void*) {
     return this->getPage().getImage();
 }
 
+Mat Processor::dilateImage(int, void* )
+{
+    int dilationType = MORPH_RECT;
+    int dilationSize = 1;
+    Mat element = getStructuringElement( dilationType,
+                                        Size( 2*dilationSize + 1, 2*dilationSize+1 ),
+                                        Point( dilationSize, dilationSize ) );
+    /// Apply the dilation operation
+    dilate(this->getPage().getImage(), this->getPage().getImage(), element);
+    return this->getPage().getImage();
+}
+
+
 void Processor::drawContours(int, void *) {
     Mat threshold_output;
     vector<vector<Point> > contours;
