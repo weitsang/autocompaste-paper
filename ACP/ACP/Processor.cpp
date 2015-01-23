@@ -24,7 +24,6 @@ Page Processor::getPage() {
 }
 
 void Processor::resizeImage(int width, int height) {
-    
     if (page.getImage().size().width != width) {
         cv::resize(page.getImage(), page.getImage(), page.getSizeRes(), 0, 0, INTER_CUBIC);
     } else {
@@ -146,16 +145,19 @@ vector<Rect> Processor::detectLetters(cv::Mat img)
     return boundRect;
 }
 
-void Processor::findWhiteLines(Mat img) {
-    
+vector<int> Processor::findWhiteLines(Mat img) {
+    vector<int> whiteLines;
     for (int i = 0; i < img.rows - 1; i++) {
         Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
         Scalar s2 = sum(Mat(img, Rect(0, i + 1, img.cols - 1, 1)));
         Scalar s3 = s - s2;
         
-        if ((int)s3[0] == 0)
+        if ((int)s3[0] == 0) {
+            whiteLines.push_back(i);
             cout << "Empty line: " << i << endl;
+        }
     }
+    return whiteLines;
 }
 
 vector<Mat> Processor::cutImage(int x_coord, int y_coord) {

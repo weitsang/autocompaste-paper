@@ -37,7 +37,7 @@ int main(int argc, const char *argv[]) {
 //
 //    // Draw contours - draws boundaries around each letter, and makes the background black - less desirable
 //    processor.drawContours(0, 0);
-
+    imshow("Borders", image);
 //    // Cutting image(Not really) - draws boundaries around characters in a line - more desirable
 //    // Read
 //    Mat img1 = imread("/Users/raghav/Desktop/2.jpg");

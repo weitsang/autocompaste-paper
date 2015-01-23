@@ -38,7 +38,7 @@ public:
     Mat erodeImage(int, void*);
     vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
-    void findWhiteLines(Mat img);
+    vector<int> findWhiteLines(Mat img);
     vector<Mat> cutImage(int x_coord, int y_coord);
     
     void displayImage(Mat image);
