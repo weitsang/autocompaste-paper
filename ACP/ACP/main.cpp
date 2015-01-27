@@ -25,6 +25,12 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     
+    vector<int> splittingLocations = processor.getSplittingLocations();
+    for (int i=0; i<splittingLocations.size(); i++) {
+        cout << splittingLocations[i] << endl;
+        cv::line(image, cv::Point(0, splittingLocations[i]), cv::Point(image.size().width, splittingLocations[i]), cv::Scalar(0, 0, 200), 2, CV_AA);
+    }
+    
     // Dilate image - remove blemishes
 //    image = processor.dilateImage(0, 0);
     // Erode image - creates blobs in place of paragraphs

@@ -16,6 +16,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include <tesseract/baseapi.h>
 #include "Page.h"
+#include <Stack>
 
 
 using namespace cv;
@@ -41,6 +42,7 @@ public:
     void drawContours(int, void*);
     vector<int> findWhiteLines(Mat img);
     vector<Mat> cutImage(int x_coord, int y_coord);
+    vector<int> getSplittingLocations();
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);

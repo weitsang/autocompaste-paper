@@ -188,6 +188,32 @@ vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
     return smallImages;
 }
 
+vector<int> Processor::getSplittingLocations() {
+    vector<int> splittingLocations;
+    Mat image = this->getPage().getImage();
+    vector<int> whiteLines = findWhiteLines(image);
+    stack<int> splitter;
+    
+    splitter.push(whiteLines[0]);
+    for (int i = 0; i<whiteLines.size(); i++) {
+        if (whiteLines[i+1] - whiteLines[i] > 1) {
+            splitter.push(whiteLines[i]);
+            splitter.push(whiteLines[i+1]);
+        }
+    }
+    splitter.push(whiteLines[whiteLines.size()-1]);
+    
+    int a, b;
+    while(!splitter.empty()) {
+        a = splitter.top();
+        splitter.pop();
+        b = splitter.top();
+        splitter.pop();
+        splittingLocations.push_back((a+b)/2);
+    }
+    return splittingLocations;
+}
+
 // Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);
