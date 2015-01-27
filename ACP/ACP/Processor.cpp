@@ -166,7 +166,7 @@ vector<int> Processor::findWhiteLines(Mat img) {
         
         if ((int)s3[0] == 0) {
             whiteLines.push_back(i);
-            cout << "Empty line: " << i << endl;
+            cout << "Empty line: " << i << " Actual value: " << (int)s[0] << endl;
         }
     }
     return whiteLines;
