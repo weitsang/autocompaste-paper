@@ -135,8 +135,7 @@ void Processor::drawContours(int, void *) {
     imshow("Contours", drawing);
 }
 
-vector<Rect> Processor::detectLetters(cv::Mat img)
-{
+vector<Rect> Processor::detectLetters(cv::Mat img) {
     std::vector<cv::Rect> boundRect;
     cv::Mat img_gray, img_sobel, img_threshold, element;
     cvtColor(img, img_gray, CV_BGR2GRAY);
