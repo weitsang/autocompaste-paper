@@ -30,11 +30,13 @@ int main(int argc, const char *argv[]) {
         cout << splittingLocations[i] << endl;
         cv::line(image, cv::Point(0, splittingLocations[i]), cv::Point(image.size().width, splittingLocations[i]), cv::Scalar(0, 0, 200), 2, CV_AA);
     }
+    threshold(image, image, 56, 255, THRESH_BINARY);
+//    adaptiveThreshold(image, image, 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 19, 4.1f);
     
     // Dilate image - remove blemishes
-//    image = processor.dilateImage(0, 0);
+    image = processor.dilateImage(0, 0);
     // Erode image - creates blobs in place of paragraphs
-//    image = processor.erodeImage(0, 0);
+    image = processor.erodeImage(0, 0);
     
     // Find white lines
     processor.findWhiteLines(image);
