@@ -11,12 +11,13 @@
 #include "Camera.h"
 #include "Page.h"
 #include "Processor.h"
+#include <OpenCL/opencl.h>
 
 int main(int argc, const char *argv[]) {
     
     Camera cam;
-    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/4.png");
-    
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/1.jpg");
+
     // Initialise Page parameters
     Page page;
     page.setImage(image);
@@ -25,45 +26,35 @@ int main(int argc, const char *argv[]) {
     Processor processor;
     processor.setPage(page);
     
-    vector<int> splittingLocations = processor.getSplittingLocations();
-    for (int i=0; i<splittingLocations.size(); i++) {
-        cout << splittingLocations[i] << endl;
-        cv::line(image, cv::Point(0, splittingLocations[i]), cv::Point(image.size().width, splittingLocations[i]), cv::Scalar(0, 0, 200), 2, CV_AA);
-    }
     threshold(image, image, 56, 255, THRESH_BINARY);
 //    adaptiveThreshold(image, image, 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 19, 4.1f);
     
+    
+
+//    vector<int> splittingLocations = processor.getSplittingLocations();
+//    for (int i=0; i<splittingLocations.size(); i++) {
+//        cout << splittingLocations[i] << endl;
+//        cv::line(image, cv::Point(0, splittingLocations[i]),
+//        cv::Point(image.size().width, splittingLocations[i]), cv::Scalar(0, 0, 200), 2, CV_AA);
+//    }
+    
+//    vector<Mat> testImages = processor.cutImageGivenWhiteLineLocations(splittingLocations);
+//    imshow("Cut image", testImages[0]);
     // Dilate image - remove blemishes
     image = processor.dilateImage(0, 0);
     // Erode image - creates blobs in place of paragraphs
     image = processor.erodeImage(0, 0);
+    imshow("Show", image);
+    cv::waitKey(0);
     
     // Find white lines
-    processor.findWhiteLines(image);
+//    processor.findWhiteLines(image);
     
-// For image 1
-//    cv::line(image, cv::Point(0, 14), cv::Point(690, 14), cv::Scalar(0, 0, 200), 2, CV_AA);
-//    cv::line(image, cv::Point(0, 48), cv::Point(690, 48), cv::Scalar(0, 0, 200), 2, CV_AA);
-//    cv::line(image, cv::Point(0, 126), cv::Point(690, 126), cv::Scalar(0, 0, 200), 2, CV_AA);
-//    cv::line(image, cv::Point(0, 576), cv::Point(690, 576), cv::Scalar(0, 0, 200), 2, CV_AA);
-//    cv::line(image, cv::Point(0, 590), cv::Point(690, 590), cv::Scalar(0, 0, 200), 2, CV_AA);
-//    cv::line(image, cv::Point(0, 624), cv::Point(690, 624), cv::Scalar(0, 0, 200), 2, CV_AA);
-
-//  Image 2 and 3 are not white enough
-
-//  For image 4
-    cv::line(image, cv::Point(0, 61), cv::Point(847, 61), cv::Scalar(0, 0, 200), 2, CV_AA);
-    cv::line(image, cv::Point(0, 104), cv::Point(847, 104), cv::Scalar(0, 0, 200), 2, CV_AA);
-    cv::line(image, cv::Point(0, 133), cv::Point(847, 133), cv::Scalar(0, 0, 200), 2, CV_AA);
-    cv::line(image, cv::Point(0, 152), cv::Point(847, 152), cv::Scalar(0, 0, 200), 2, CV_AA);
-    cv::line(image, cv::Point(0, 188), cv::Point(847, 188), cv::Scalar(0, 0, 200), 2, CV_AA);
     
-    imshow("Show", image);
-//    cout << "Image size: " << image.size() << endl;
-
 //    // Draw contours - draws boundaries around each letter, and makes the background black - less desirable
 //    processor.drawContours(0, 0);
 //    imshow("Borders", image);
+//    imwrite("/Users/raghav/Desktop/1-modified-before-dilation.jpg", image);
     
 //    // Cutting image(Not really) - draws boundaries around characters in a line - more desirable
 //    // Read
@@ -83,8 +74,10 @@ int main(int argc, const char *argv[]) {
 //    // Cut image
 //    vector<Mat> images = processor.cutImage(230, 110);
 //    imshow("First small image", images[0]);
-    cv::waitKey(0);
 
+
+    
+    
 //    processor.prepareImageForOCR();
     
 //    // Send to OCR
