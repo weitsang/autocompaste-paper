@@ -15,13 +15,16 @@ Processor::Processor() {
     
 }
 
+
 void Processor::setPage(Page page) {
     this->page = page;
 }
 
+
 Page Processor::getPage() {
     return page;
 }
+
 
 void Processor::resizeImage(int width, int height) {
     if (page.getImage().size().width != width) {
@@ -31,10 +34,12 @@ void Processor::resizeImage(int width, int height) {
     }
 }
 
+
 void Processor::prepareImageForOCR() {
     cv::GaussianBlur(page.getImage(), page.getImage(), Size(3, 3), 0, 0);
     cv::adaptiveThreshold(page.getImage(), page.getImage(), 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
 }
+
 
 void Processor::rotateImageClockwise(double angle) {
     Size srcSize = page.getImage().size();
@@ -45,12 +50,14 @@ void Processor::rotateImageClockwise(double angle) {
     page.setImage(getRotationMatrix2D(center, angle, 1.0));
 }
 
+
 void Processor::initialiseTesseractAPI() {
     tessAPI = new tesseract::TessBaseAPI();
     if(tessAPI->Init(NULL, "eng")) {
         cout << "Could not initialise Tesseract." << endl;
     }
 }
+
 
 string Processor::extractTextFromImage() {
     initialiseTesseractAPI();
@@ -62,6 +69,7 @@ string Processor::extractTextFromImage() {
     return text;
 }
 
+
 void Processor::replaceUnwantedCharactersWithSpace(string text) {
     string allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ";
     size_t nonalpha = text.find_first_not_of(allowedCharacters);
@@ -72,6 +80,7 @@ void Processor::replaceUnwantedCharactersWithSpace(string text) {
     }
 }
 
+
 Mat Processor::erodeImage(int, void*) {
     int erosionType = MORPH_RECT;
     int erosionSize = 13;
@@ -81,16 +90,66 @@ Mat Processor::erodeImage(int, void*) {
     return this->getPage().getImage();
 }
 
-Mat Processor::dilateImage(int, void* )
-{
+
+Mat Processor::dilateImage(int, void* ) {
     int dilationType = MORPH_RECT;
-    double dilationSize = 0.5;
+    double dilationSize = 1.0;
     Mat element = getStructuringElement( dilationType,
                                         Size( 2*dilationSize, 2*dilationSize),
                                         Point( dilationSize, dilationSize ) );
     /// Apply the dilation operation
     dilate(this->getPage().getImage(), this->getPage().getImage(), element);
     return this->getPage().getImage();
+}
+
+
+//vector<int> Processor::getSplittingLocations() {
+//    vector<int> splittingLocations;
+//    Mat image = this->getPage().getImage();
+//    vector<int> whiteLines = findWhiteRegions(image);
+//    stack<int> splitter;
+//    
+//    splitter.push(whiteLines[0]);
+//    for (int i = 0; i<whiteLines.size(); i++) {
+//        if (whiteLines[i+1] - whiteLines[i] > 1) {
+//            splitter.push(whiteLines[i]);
+//            splitter.push(whiteLines[i+1]);
+//        }
+//    }
+//    splitter.push(whiteLines[whiteLines.size()-1]);
+//    
+//    int a, b;
+//    while(!splitter.empty()) {
+//        a = splitter.top();
+//        splitter.pop();
+//        b = splitter.top();
+//        splitter.pop();
+//        splittingLocations.push_back((a+b)/2);
+//    }
+//    return splittingLocations;
+//}
+
+// Unused
+vector<Rect> Processor::detectLetters(cv::Mat img) {
+    std::vector<cv::Rect> boundRect;
+    cv::Mat img_gray, img_sobel, img_threshold, element;
+    cvtColor(img, img_gray, CV_BGR2GRAY);
+    cv::Sobel(img_gray, img_sobel, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::threshold(img_sobel, img_threshold, 0, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
+    element = getStructuringElement(cv::MORPH_RECT, cv::Size(17, 3) );
+    cv::morphologyEx(img_threshold, img_threshold, CV_MOP_CLOSE, element); //Does the trick
+    std::vector< std::vector< cv::Point> > contours;
+    cv::findContours(img_threshold, contours, 0, 1);
+    std::vector<std::vector<cv::Point> > contours_poly( contours.size() );
+    for( int i = 0; i < contours.size(); i++ )
+        if (contours[i].size()>100)
+        {
+            cv::approxPolyDP( cv::Mat(contours[i]), contours_poly[i], 3, true );
+            cv::Rect appRect( boundingRect( cv::Mat(contours_poly[i]) ));
+            if (appRect.width>appRect.height)
+                boundRect.push_back(appRect);
+        }
+    return boundRect;
 }
 
 
@@ -127,7 +186,7 @@ void Processor::drawContours(int, void *) {
         cv::drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
         rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
         cout << "Color:" << color << endl;
-//        circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+        //        circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
     }
     
     /// Show in a window
@@ -135,90 +194,12 @@ void Processor::drawContours(int, void *) {
     imshow("Contours", drawing);
 }
 
-vector<Rect> Processor::detectLetters(cv::Mat img) {
-    std::vector<cv::Rect> boundRect;
-    cv::Mat img_gray, img_sobel, img_threshold, element;
-    cvtColor(img, img_gray, CV_BGR2GRAY);
-    cv::Sobel(img_gray, img_sobel, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
-    cv::threshold(img_sobel, img_threshold, 0, 255, CV_THRESH_OTSU+CV_THRESH_BINARY);
-    element = getStructuringElement(cv::MORPH_RECT, cv::Size(17, 3) );
-    cv::morphologyEx(img_threshold, img_threshold, CV_MOP_CLOSE, element); //Does the trick
-    std::vector< std::vector< cv::Point> > contours;
-    cv::findContours(img_threshold, contours, 0, 1);
-    std::vector<std::vector<cv::Point> > contours_poly( contours.size() );
-    for( int i = 0; i < contours.size(); i++ )
-        if (contours[i].size()>100)
-        {
-            cv::approxPolyDP( cv::Mat(contours[i]), contours_poly[i], 3, true );
-            cv::Rect appRect( boundingRect( cv::Mat(contours_poly[i]) ));
-            if (appRect.width>appRect.height)
-                boundRect.push_back(appRect);
-        }
-    return boundRect;
-}
 
-vector<int> Processor::findWhiteLines(Mat img) {
-    vector<int> whiteLines;
-    for (int i = 0; i < img.rows - 1; i++) {
-        Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
-        Scalar s2 = sum(Mat(img, Rect(0, i + 1, img.cols - 1, 1)));
-        Scalar s3 = s - s2;
-        
-        if ((int)s3[0] == 0) {
-            whiteLines.push_back(i);
-            cout << "Empty line: " << i << " Actual value: " << (int)s[0] << endl;
-        }
-    }
-    return whiteLines;
-}
-
-vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
-    Mat bigImage = page.getImage();
-    Mat smallImage = Mat(bigImage, Rect(0, 0, x_coord, y_coord));
-    
-    Size smallSize(x_coord, y_coord);
-    vector<Mat> smallImages;
-    
-    for (int y = 0; y < bigImage.rows; y += smallSize.height) {
-        for (int x = 0; x < bigImage.cols; x += smallSize.width) {
-            Rect rect = Rect(x, y, smallSize.width, smallSize.height);
-            smallImages.push_back(Mat(bigImage, rect));
-        }
-    }
-    return smallImages;
-}
-
-vector<int> Processor::getSplittingLocations() {
-    vector<int> splittingLocations;
-    Mat image = this->getPage().getImage();
-    vector<int> whiteLines = findWhiteLines(image);
-    stack<int> splitter;
-    
-    splitter.push(whiteLines[0]);
-    for (int i = 0; i<whiteLines.size(); i++) {
-        if (whiteLines[i+1] - whiteLines[i] > 1) {
-            splitter.push(whiteLines[i]);
-            splitter.push(whiteLines[i+1]);
-        }
-    }
-    splitter.push(whiteLines[whiteLines.size()-1]);
-    
-    int a, b;
-    while(!splitter.empty()) {
-        a = splitter.top();
-        splitter.pop();
-        b = splitter.top();
-        splitter.pop();
-        splittingLocations.push_back((a+b)/2);
-    }
-    return splittingLocations;
-}
-
-// Unused
 void Processor::displayImage(Mat image) {
     imshow("Result", image);
 //    warpAffine(page.getImage(), page.getImage(), rotatedMat, dstSize);
 }
+
 
 void Processor::deskewImage(Mat image, double angle, Mat &rotated) {
     bitwise_not(image, image);
