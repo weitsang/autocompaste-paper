@@ -38,6 +38,7 @@ const char *KernelSource = "\n" \
 "\n";
 
 ////////////////////////////////////////////////////////////////////////////////
+class AdvancedProcessor {
 
 int processAcrossCores(int argc, char** argv)
 {
@@ -216,3 +217,4 @@ int processAcrossCores(int argc, char** argv)
     
     return 0;
 }
+};
