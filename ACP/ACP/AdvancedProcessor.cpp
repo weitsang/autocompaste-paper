@@ -1,14 +1,4 @@
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <OpenCL/opencl.h>
-#include <tesseract/baseapi.h>
-#include <opencv2/opencv.hpp>
+#include "AdvancedProcessor.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -38,9 +28,7 @@ const char *KernelSource = "\n" \
 "\n";
 
 ////////////////////////////////////////////////////////////////////////////////
-class AdvancedProcessor {
-
-int processAcrossCores(int argc, char** argv)
+int AdvancedProcessor :: processAcrossCores(int argc, char** argv)
 {
     int err;                            // error code returned from api calls
     
@@ -217,4 +205,3 @@ int processAcrossCores(int argc, char** argv)
     
     return 0;
 }
-};
