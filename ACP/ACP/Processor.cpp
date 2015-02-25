@@ -114,6 +114,20 @@ Mat Processor::dilateImage(int, void* ) {
 //        if (whiteLines[i+1] - whiteLines[i] > 1) {
 //            splitter.push(whiteLines[i]);
 //            splitter.push(whiteLines[i+1]);
+vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLocations) {
+    vector<Mat> images;
+    Mat image = this->getPage().getImage();
+    int width = image.size().width;
+    sort(whiteLineLocations.begin(), whiteLineLocations.end());
+
+    for (int i = 0, y = 0, height = 0; i < whiteLineLocations.size(); y = whiteLineLocations[i], i++) {
+        height = whiteLineLocations[i] - y;
+        Rect rect = Rect(0, y, width, height);
+        images.push_back(Mat(image, rect));
+    }
+    return images;
+}
+
 //        }
 //    }
 //    splitter.push(whiteLines[whiteLines.size()-1]);
