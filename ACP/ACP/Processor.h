@@ -17,7 +17,7 @@
 #include <tesseract/baseapi.h>
 #include "Page.h"
 #include <Stack>
-
+#include <algorithm>
 
 using namespace cv;
 using namespace std;
@@ -41,8 +41,11 @@ public:
     vector<cv::Rect> detectLetters(Mat img);
     void drawContours(int, void*);
     vector<int> findWhiteLines(Mat img);
+    vector<int> findWhiteRegions(Mat img);
+    int findLineWithMaxPixelValue(vector<int> lines);
     vector<Mat> cutImage(int x_coord, int y_coord);
     vector<int> getSplittingLocations();
+    vector<Mat> cutImageGivenWhiteLineLocations(vector<int> whiteLineLocations);
     
     void displayImage(Mat image);
     void displayImageAfterRotation(Mat image, double angle);
