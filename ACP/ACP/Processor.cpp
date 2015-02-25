@@ -142,6 +142,21 @@ vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLoca
 //    }
 //    return splittingLocations;
 //}
+vector<int> Processor::findWhiteLines(Mat img) {
+    vector<int> whiteLines;
+    
+    for (int i = 0; i < img.rows-1; i++) {
+        Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
+        Scalar s2 = sum(Mat(img, Rect(0, i+1, img.cols - 1, 1)));
+        Scalar s3 = s - s2;
+        
+        if ((int)s3[0] == 0)
+            whiteLines.push_back(i);
+    }
+    
+    return whiteLines;
+}
+
 
 // Unused
 vector<Rect> Processor::detectLetters(cv::Mat img) {
