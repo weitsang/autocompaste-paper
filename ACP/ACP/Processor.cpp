@@ -103,17 +103,23 @@ Mat Processor::dilateImage(int, void* ) {
 }
 
 
-//vector<int> Processor::getSplittingLocations() {
-//    vector<int> splittingLocations;
-//    Mat image = this->getPage().getImage();
-//    vector<int> whiteLines = findWhiteRegions(image);
-//    stack<int> splitter;
-//    
-//    splitter.push(whiteLines[0]);
-//    for (int i = 0; i<whiteLines.size(); i++) {
-//        if (whiteLines[i+1] - whiteLines[i] > 1) {
-//            splitter.push(whiteLines[i]);
-//            splitter.push(whiteLines[i+1]);
+vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
+    Mat bigImage = page.getImage();
+    Mat smallImage = Mat(bigImage, Rect(0, 0, x_coord, y_coord));
+    
+    Size smallSize(x_coord, y_coord);
+    vector<Mat> smallImages;
+    
+    for (int y = 0; y < bigImage.rows; y += smallSize.height) {
+        for (int x = 0; x < bigImage.cols; x += smallSize.width) {
+            Rect rect = Rect(x, y, smallSize.width, smallSize.height);
+            smallImages.push_back(Mat(bigImage, rect));
+        }
+    }
+    return smallImages;
+}
+
+
 vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLocations) {
     vector<Mat> images;
     Mat image = this->getPage().getImage();
@@ -128,19 +134,47 @@ vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLoca
     return images;
 }
 
+
+int Processor::findLineWithMaxPixelValue(vector<int> values) {
+    sort(values.begin(), values.end());
+    cout << "white line: " << values[values.size() - 1] << endl;
+    return values[values.size() - 1];
+}
+
+
+//vector<int> Processor::findWhiteRegions(Mat img) {
+//    vector<int> regions, pixelValues;
+//    map<int, int> whiteLines;
+//
+//    for (int i = 0; i < img.rows - 1; i++) {
+//        Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
+//        Scalar s2 = sum(Mat(img, Rect(0, i + 1, img.cols - 1, 1)));
+//        Scalar s3 = s - s2;
+//        Scalar whiteRegionValue = 0;
+//
+//        if ((int)s3[0] == 0) {
+////            whiteLines.push_back(i, (int)s[0]);
+////            pixelValues.push_back((int)s[0]);
+//            regions.push_back(i);
+//            if( (int)s[0] > (int)whiteRegionValue[0] ) {
+//                whiteRegionValue = s;
+//            }
+//            cout << "Empty line: " << i << " Actual value: " << (int)s[0] << endl;
 //        }
 //    }
-//    splitter.push(whiteLines[whiteLines.size()-1]);
-//    
-//    int a, b;
-//    while(!splitter.empty()) {
-//        a = splitter.top();
-//        splitter.pop();
-//        b = splitter.top();
-//        splitter.pop();
-//        splittingLocations.push_back((a+b)/2);
+//
+//    for (int i = 0; i < regions.size(); i++) {
+//        Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
+//        if (s < whiteRegionValue) {
+//            regions;
+//        }
 //    }
-//    return splittingLocations;
+//
+////    int whiteLine = findLineWithMaxPixelValue(pixelValues);
+//
+//
+//
+//    return regions;
 //}
 vector<int> Processor::findWhiteLines(Mat img) {
     vector<int> whiteLines;
@@ -156,6 +190,34 @@ vector<int> Processor::findWhiteLines(Mat img) {
     
     return whiteLines;
 }
+
+vector<int> Processor::getSplittingLocations() {
+    vector<int> splittingLocations;
+    Mat image = this->getPage().getImage();
+//    vector<int> whiteLines = findWhiteRegions(image);
+    vector<int> whiteLines = findWhiteLines(image);
+    stack<int> splitter;
+    
+    splitter.push(whiteLines[0]);
+    for (int i = 0; i<whiteLines.size(); i++) {
+        if (whiteLines[i+1] - whiteLines[i] > 1) {
+            splitter.push(whiteLines[i]);
+            splitter.push(whiteLines[i+1]);
+        }
+    }
+    splitter.push(whiteLines[whiteLines.size()-1]);
+    
+    int a, b;
+    while(!splitter.empty()) {
+        a = splitter.top();
+        splitter.pop();
+        b = splitter.top();
+        splitter.pop();
+        splittingLocations.push_back((a+b)/2);
+    }
+    return splittingLocations;
+}
+
 
 
 // Unused
