@@ -120,14 +120,25 @@ vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLoca
 
 vector<int> Processor::findWhiteLines(Mat img) {
     vector<int> whiteLines;
+    map<int, int> actualWhiteLines;
+    int highest = 0;
     
     for (int i = 0; i < img.rows-1; i++) {
         Scalar s = sum(Mat(img, Rect(0, i, img.cols - 1, 1)));
         Scalar s2 = sum(Mat(img, Rect(0, i+1, img.cols - 1, 1)));
         Scalar s3 = s - s2;
         
-        if ((int)s3[0] == 0)
-            whiteLines.push_back(i);
+        if ((int)s3[0] == 0) {
+            highest = (highest < (int)s[0]) ? (int)s[0] : highest;
+            actualWhiteLines[i] = (int)s[0];
+        }
+    }
+    
+    // Iterate through map to eliminate non white lines and push only white lines
+    typedef map<int, int>::iterator it_type;
+    for(it_type iterator = actualWhiteLines.begin(); iterator != actualWhiteLines.end(); iterator++) {
+        if (iterator->second == highest)
+            whiteLines.push_back(iterator->first);
     }
     
     return whiteLines;
