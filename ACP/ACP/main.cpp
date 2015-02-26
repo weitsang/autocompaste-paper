@@ -17,7 +17,7 @@
 int main(int argc, const char *argv[]) {
     
     Camera cam;
-    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/4.png");
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/5.jpg");
 
     // Initialise Page parameters
     Page page;
@@ -28,18 +28,15 @@ int main(int argc, const char *argv[]) {
     processor.setPage(page);
     
     vector<int> whiteLineLocations = processor.getSplittingLocations();
-    vector<Mat> cutImages = processor.cutImageGivenWhiteLineLocations(whiteLineLocations);
-    // Cut image
-//    vector<Mat> images = processor.cutImage(230, 110);
-    cout << "Does the vector contain anything? " << cutImages.size() << endl;
-    
-    imshow("First cut image", cutImages[3]);
-    
+
+//    vector<Mat> cutImages = processor.cutImageGivenWhiteLineLocations(whiteLineLocations);
+//    cout << "Does the vector contain anything? " << cutImages.size() << endl;
+//    imshow("First cut image", cutImages[3]);
+    imshow("image", image);
     waitKey();
     
 //    threshold(image, image, 56, 255, THRESH_BINARY);
 //    image = processor.dilateImage(0, 0);
-    
     
 //    processor.prepareImageForOCR();
     
