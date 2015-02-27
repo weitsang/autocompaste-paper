@@ -53,6 +53,6 @@ public:
     
     void initialiseTesseractAPI();
     string extractTextFromImage();
-    void replaceUnwantedCharactersWithSpace(string text);
+    string replaceUnwantedCharactersWithSpace(string text);
 };
 #endif /* defined(__ACP__Processor__) */

@@ -70,14 +70,15 @@ string Processor::extractTextFromImage() {
 }
 
 
-void Processor::replaceUnwantedCharactersWithSpace(string text) {
-    string allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+_,.;<> ";
+string Processor::replaceUnwantedCharactersWithSpace(string text) {
+    string allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()-+_,.:;[]{}<>/\'\"? ";
     size_t nonalpha = text.find_first_not_of(allowedCharacters);
     
     while(nonalpha != string::npos) {
         text.at(nonalpha) = ' ';
         nonalpha = text.find_first_not_of(allowedCharacters);
     }
+    return text;
 }
 
 
