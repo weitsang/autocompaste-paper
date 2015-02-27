@@ -12,7 +12,7 @@
 #include "Page.h"
 #include "Processor.h"
 #include <OpenCL/opencl.h>
-//#include "AdvancedProcessor.cpp"
+#include "AdvancedProcessor.h"
 
 int main(int argc, const char *argv[]) {
     
