@@ -14,9 +14,9 @@ const char *KernelSource = "\n" \
 "__kernel void extractText (                                            \n"\
 "   __global Mat input,                                                 \n"\
 "   __global string output,                                             \n"\
-"   const unsigned int count)                                           \n"\
+"   int count)                                                          \n"\
 "   {                                                                   \n"\
-"      tessAPI = new tesseract::TessBaseAPI();                          \n"\
+"       tessAPI = new tesseract::TessBaseAPI();                         \n"\
 "       tessAPI->SetImage(input.data, input.cols, input.rows,           \n"\
 "                  input.channels(), input.step);                       \n"\
 "       int i = get_global_id(0);                                       \n"\
@@ -28,7 +28,7 @@ const char *KernelSource = "\n" \
 "\n";
 
 ////////////////////////////////////////////////////////////////////////////////
-int AdvancedProcessor :: processAcrossCores(int argc, char** argv)
+int AdvancedProcessor :: processAcrossCores()
 {
     int err;                            // error code returned from api calls
     

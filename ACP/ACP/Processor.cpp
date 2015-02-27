@@ -92,12 +92,12 @@ Mat Processor::erodeImage(int, void*) {
 }
 
 
-Mat Processor::dilateImage(int, void* ) {
+Mat Processor::dilateImage(int, void*) {
     int dilationType = MORPH_RECT;
     double dilationSize = 1.0;
     Mat element = getStructuringElement( dilationType,
-                                        Size( 2*dilationSize, 2*dilationSize),
-                                        Point( dilationSize, dilationSize ) );
+                                        Size(2*dilationSize, 2*dilationSize),
+                                        Point(dilationSize, dilationSize));
     /// Apply the dilation operation
     dilate(this->getPage().getImage(), this->getPage().getImage(), element);
     return this->getPage().getImage();

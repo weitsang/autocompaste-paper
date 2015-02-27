@@ -18,5 +18,6 @@
 #include <opencv2/opencv.hpp>
 
 class AdvancedProcessor {
-    int processAcrossCores(int argc, char** argv);
+public:
+    int processAcrossCores();
 };
