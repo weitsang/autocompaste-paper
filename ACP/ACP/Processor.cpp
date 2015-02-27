@@ -63,7 +63,7 @@ string Processor::extractTextFromImage() {
     initialiseTesseractAPI();
     string text;
     tessAPI->SetImage(page.getImage().data, page.getImage().cols, page.getImage().rows,
-                      page.getImage().channels(), page.getImage().step);
+                      page.getImage().channels(), (int)page.getImage().step);
     text = tessAPI->GetUTF8Text();
     tessAPI->End();
     return text;
