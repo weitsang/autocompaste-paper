@@ -52,7 +52,7 @@ public:
     void deskewImage(Mat img, double angle, Mat &rotated);
     
     void initialiseTesseractAPI();
-    string extractTextFromImage();
+    string extractTextFromImage(Mat image);
     string replaceUnwantedCharactersWithSpace(string text);
 };
 #endif /* defined(__ACP__Processor__) */

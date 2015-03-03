@@ -59,11 +59,11 @@ void Processor::initialiseTesseractAPI() {
 }
 
 
-string Processor::extractTextFromImage() {
+string Processor::extractTextFromImage(Mat image) {
     initialiseTesseractAPI();
     string text;
-    tessAPI->SetImage(page.getImage().data, page.getImage().cols, page.getImage().rows,
-                      page.getImage().channels(), (int)page.getImage().step);
+    tessAPI->SetImage(image.data, image.cols, image.rows,
+                      image.channels(), (int)image.step);
     text = tessAPI->GetUTF8Text();
     tessAPI->End();
     return text;
