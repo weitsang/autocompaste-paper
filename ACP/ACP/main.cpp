@@ -14,6 +14,22 @@
 #include <OpenCL/opencl.h>
 #include "AdvancedProcessor.h"
 
+
+struct threadData {
+    int id;
+    Processor processor;
+    Mat image;
+};
+
+void *extractText(void *threadArg) {
+    struct threadData *data;
+    
+    data = (struct threadData *) threadArg;
+    cout << data->processor.extractTextFromImage(data->image) << endl;
+    
+    pthread_exit(NULL);
+}
+
 int main(int argc, const char *argv[]) {
     
     Camera cam;
@@ -47,6 +63,24 @@ int main(int argc, const char *argv[]) {
 //    cout << output << endl;
 //    processor.resizeImage(600, 400);
 //    cout << processor.getPage().getImage().size().width << endl;
+    
+    int numberOfThreads = (int)cutImages.size();
+    struct threadData td[10];
+    pthread_t threads[numberOfThreads];
+    
+
+    for (int i = 0; i < numberOfThreads; i++) {
+        td[i].id = i;
+        td[i].processor = processor;
+        td[i].image = cutImages[i];
+        int statusFail = pthread_create(&threads[i], NULL, extractText, (void*)&td[i]);
+        if (statusFail) {
+            cout << "Error: Unable to create thread," << statusFail << endl;
+            exit(-1);
+        }
+    }
+
+    pthread_exit(NULL);
     return 0;
 }
 
