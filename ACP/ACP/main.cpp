@@ -14,7 +14,6 @@
 #include <OpenCL/opencl.h>
 #include "AdvancedProcessor.h"
 
-
 struct threadData {
     int id;
     Processor processor;
@@ -23,17 +22,16 @@ struct threadData {
 
 void *extractText(void *threadArg) {
     struct threadData *data;
-    
     data = (struct threadData *) threadArg;
-    cout << data->processor.extractTextFromImage(data->image) << endl;
-    
+    string text = data->processor.extractTextFromImage(data->image);
+    cout << text << endl;
     pthread_exit(NULL);
 }
 
 int main(int argc, const char *argv[]) {
     
     Camera cam;
-    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/5.jpg");
+    Mat image = cam.getImageFileInput("/Users/raghav/Desktop/11.png");
 
     // Initialise Page parameters
     Page page;
@@ -44,32 +42,23 @@ int main(int argc, const char *argv[]) {
     processor.setPage(page);
     
     vector<int> whiteLineLocations = processor.getSplittingLocations();
-
-//    vector<Mat> cutImages = processor.cutImageGivenWhiteLineLocations(whiteLineLocations);
-//    cout << "Does the vector contain anything? " << cutImages.size() << endl;
-//    imshow("First cut image", cutImages[3]);
-    imshow("image", image);
-    waitKey();
+    vector<Mat> cutImages = processor.cutImageGivenWhiteLineLocations(whiteLineLocations);
     
-//    threshold(image, image, 56, 255, THRESH_BINARY);
-//    image = processor.dilateImage(0, 0);
-    
-//    processor.prepareImageForOCR();
-    
-//    // Send to OCR
-//    string output = processor.extractTextFromImage();
-//    processor.replaceUnwantedCharactersWithSpace(output);
-    
+//    for (int i = 0; i < cutImages.size(); i++) {
+//        cout << cutImages.size() << endl;
+//        imshow("Image", cutImages[i]);
+//        waitKey();
+//    }
+    // Send to OCR
+//    string output = processor.extractTextFromImage(image);
 //    cout << output << endl;
-//    processor.resizeImage(600, 400);
-//    cout << processor.getPage().getImage().size().width << endl;
-    
-    int numberOfThreads = (int)cutImages.size();
-    struct threadData td[10];
-    pthread_t threads[numberOfThreads];
-    
 
-    for (int i = 0; i < numberOfThreads; i++) {
+
+    int numberOfThreads = (int)cutImages.size();
+    struct threadData td[22];
+    pthread_t threads[22];
+
+    for (int i = 1; i < numberOfThreads; i++) {
         td[i].id = i;
         td[i].processor = processor;
         td[i].image = cutImages[i];
@@ -79,8 +68,8 @@ int main(int argc, const char *argv[]) {
             exit(-1);
         }
     }
-
     pthread_exit(NULL);
+    
     return 0;
 }
 
