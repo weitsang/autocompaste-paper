@@ -37,10 +37,12 @@ void Processor::resizeImage(int width, int height) {
 
 void Processor::prepareImageForOCR() {
     cv::GaussianBlur(page.getImage(), page.getImage(), Size(3, 3), 0, 0);
+    // Otsu's threshold already applied by Tesseract - use with caution
     cv::adaptiveThreshold(page.getImage(), page.getImage(), 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
 }
 
 
+// For camera setup as given in the demo video of ACP-Paper
 void Processor::rotateImageClockwise(double angle) {
     Size srcSize = page.getImage().size();
     Size dstSize(srcSize.height, srcSize.width);
@@ -70,6 +72,7 @@ string Processor::extractTextFromImage(Mat image) {
 }
 
 
+// TODO: requires testing
 string Processor::replaceUnwantedCharactersWithSpace(string text) {
     string allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()-+_,.:;[]{}<>/\'\"? ";
     size_t nonalpha = text.find_first_not_of(allowedCharacters);
@@ -82,6 +85,7 @@ string Processor::replaceUnwantedCharactersWithSpace(string text) {
 }
 
 
+// For removing blemishes
 Mat Processor::erodeImage(int, void*) {
     int erosionType = MORPH_RECT;
     int erosionSize = 13;
@@ -104,6 +108,7 @@ Mat Processor::dilateImage(int, void*) {
 }
 
 
+// Splits parent image into several sub-parts TODO: fails sometimes, requires testing
 vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLocations) {
     vector<Mat> images;
     Mat image = this->getPage().getImage();
@@ -119,6 +124,7 @@ vector<Mat> Processor::cutImageGivenWhiteLineLocations(vector<int> whiteLineLoca
 }
 
 
+// Calculates the sum of the pixels of each line, compares against adjacent lines and returns only those that are actually white
 vector<int> Processor::findWhiteLines(Mat img) {
     vector<int> whiteLines;
     map<int, int> actualWhiteLines;
@@ -146,6 +152,8 @@ vector<int> Processor::findWhiteLines(Mat img) {
 }
 
 
+// Returns the splitting locations (average of first white line after and last white line
+// before line containing black pixels) from a list of white lines identified
 vector<int> Processor::getSplittingLocations() {
     vector<int> splittingLocations;
     Mat image = this->getPage().getImage();
@@ -174,7 +182,7 @@ vector<int> Processor::getSplittingLocations() {
 
 
 
-// Unused
+// Currently unused methods
 vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
     Mat bigImage = page.getImage();
     Mat smallImage = Mat(bigImage, Rect(0, 0, x_coord, y_coord));
@@ -192,6 +200,7 @@ vector<Mat> Processor::cutImage(int x_coord, int y_coord) {
 }
 
 
+// The following two methods were tried to identify white regions in the image
 vector<Rect> Processor::detectLetters(cv::Mat img) {
     std::vector<cv::Rect> boundRect;
     cv::Mat img_gray, img_sobel, img_threshold, element;
@@ -263,6 +272,7 @@ void Processor::displayImage(Mat image) {
 }
 
 
+// Needs to be added for improving accuracy
 void Processor::deskewImage(Mat image, double angle, Mat &rotated) {
     bitwise_not(image, image);
     vector<Point> points;
