@@ -57,6 +57,8 @@ public:
 	int getNumberOfLines();
 	vector<int> getLineLength();
 	vector<int> getWhiteSpaceHeight();
+	
+	
 };
 
 #endif /* defined(__ACP__Page__) */

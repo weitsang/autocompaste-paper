@@ -72,5 +72,12 @@ public:
 	vector<Vec4i> findObstacle(vector<vector<Point>> contour);
 	void removeObstacleRegion(vector<Vec4i> coordinates, Mat image);
 	
+	
+	//Methods for finding Online Content
+	void findOnlineContentUrl(string ocrString);
+	string readUrlFile(string fileName);
+	void getTextFromLink(string url, string ocrText);
+	string onlineContent(string ocrString);
+	
 };
 #endif /* defined(__ACP__Processor__) */

@@ -646,3 +646,79 @@ vector<Vec4i> page::findObstacle(vector<vector<Point>> contour){
 	
 }
 
+// Methods for finding online content
+
+void Document :: findOnlineContentUrl(string ocrString){
+
+	replace(ocrString.begin(), ocrString.end(), ' ', '+');
+	
+
+	//string cmd = "curl \"https://www.googleapis.com/customsearch/v1?key=AIzaSyB64t7bbDK_sNG4maaAtbb99aYYYEJNT5I&cx=014325120938967253327:qpojbow-kjk&q=Edwin&alt=json\" |findstr \"formattedUrl\" > onlineSource.txt";
+
+	string curl = "curl ";
+	string searchString = ocrString + "\"";
+	string request = "\"https://www.googleapis.com/customsearch/v1?key=AIzaSyB64t7bbDK_sNG4maaAtbb99aYYYEJNT5I&cx=014325120938967253327:qpojbow-kjk&alt=json&q=";
+	request += searchString;
+	string getUrl = " |findstr \"formattedUrl\" > onlineSource.txt";
+
+	string cmd = curl + request + getUrl;
+	int i = system(cmd.c_str());
+
+
+}
+
+string Document :: readUrlFile(string fileName){
+
+	ifstream infile(fileName);
+	string line;
+	string url = "";
+	
+	while (std::getline(infile, line))
+	{
+		int count = 0;
+		std::istringstream iss(line);
+		string a, b;
+
+		if (!(iss >> a >> b)) {
+			break;
+		}
+		count++;
+		if (count > 0){
+			url = b.substr(0, b.size() - 1);
+			break;
+		}
+		
+	}
+	return url;
+
+}
+
+void Document :: getTextFromLink(string url, string ocrText){
+
+	string curl = "curl ";
+	string request = url;
+
+	string filter = " |findstr ";
+	string searchTerm = "\"" + ocrText + "\"";
+	string fileName = " > onlineText.txt";
+
+	string cmd = curl + request + filter + searchTerm + fileName;
+	int i = system(cmd.c_str());
+
+}
+
+string Document :: onlineContent(string ocrString){
+
+	findOnlineContentUrl(ocrString);
+	string url = readUrlFile("onlineSource.txt");
+	if (url == ""){
+		return ocrString;
+	}
+	else{
+		getTextFromLink(url, ocrString);
+	}
+
+	return ocrString;
+}
+
+
