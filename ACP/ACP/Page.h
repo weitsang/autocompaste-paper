@@ -26,6 +26,16 @@ private:
     Mat sumOfImages;
     int numOfFrames;
     CvSize sizeRes;
+	
+	
+	Mat Frame;
+	Mat originalFrame;
+
+	int numberOfLines;
+	vector<int> lineLength;
+	vector<int> whiteSpaceHeight;
+	vector<int> lineHeight;
+	double whitePixelCount;
 
 public:
     Page();
@@ -40,6 +50,13 @@ public:
     void setNumOfFrames(int count);
     
     void resizeImage(Mat src, Mat &dst);
+	
+	double getWhitePixelCount();
+	
+	Mat getFrame();
+	int getNumberOfLines();
+	vector<int> getLineLength();
+	vector<int> getWhiteSpaceHeight();
 };
 
 #endif /* defined(__ACP__Page__) */

@@ -35,3 +35,27 @@ void Page::setNumOfFrames(int count) {
 void Page::setSumOfImages(Mat sumOfImages) {
     this->sumOfImages = sumOfImages;
 }
+
+double page::getWhitePixelCount(){
+
+	return whitePixelCount;
+}
+
+Mat page::getFrame(){
+
+	return Frame;
+}
+
+int page::getNumberOfLines(){
+
+	return numberOfLines;
+}
+
+vector<int> page::getLineLength(){
+	return lineLength;
+
+}
+vector<int> page::getWhiteSpaceHeight(){
+	return whiteSpaceHeight;
+}
+
