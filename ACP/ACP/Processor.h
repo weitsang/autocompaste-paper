@@ -54,5 +54,17 @@ public:
     void initialiseTesseractAPI();
     string extractTextFromImage(Mat image);
     string replaceUnwantedCharactersWithSpace(string text);
+	
+	
+	//Methods for page flip
+	double computeSkew();
+	void deskew(Mat &destination, double angle);
+	
+	void computeHoughLine(Mat image, Mat &destination);
+	void computeContour(Mat image);
+	
+	void computeLineLength(vector<vector<Point>> contour);
+	
+	
 };
 #endif /* defined(__ACP__Processor__) */

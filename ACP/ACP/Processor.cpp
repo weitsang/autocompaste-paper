@@ -295,3 +295,206 @@ void Processor::deskewImage(Mat image, double angle, Mat &rotated) {
     bitwise_not(rotated, rotated);
     cout << "Deskewing image.." << endl;
 }
+
+
+// Methods for page flip
+
+double page::computeSkew(){
+	
+	cvtColor(Frame, Frame, CV_BGR2GRAY);
+	GaussianBlur(Frame, Frame, Size(3, 3), 0, 0);
+	adaptiveThreshold(Frame, Frame, 255.f, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 4.1f);
+	
+	cv::bitwise_not(Frame, Frame);
+		
+	cv::Size size = Frame.size();
+	std::vector<cv::Vec4i> lines;
+
+	cv::HoughLinesP(Frame, lines, 1, CV_PI / 180, 100, 100, 100);
+		
+	double initialAngle = 0.;
+	double skewAngle = 0.;
+	double lineAngle = 0.;
+	int lineCount = 0;
+	unsigned nb_lines = lines.size();
+
+	for (unsigned i = 0; i < nb_lines; ++i)
+	{
+		initialAngle += atan2((double)lines[i][3] - lines[i][1],
+			(double)lines[i][2] - lines[i][0]);
+	}
+
+	initialAngle /= nb_lines; 
+	initialAngle = initialAngle * 180 / CV_PI;
+
+		
+	return initialAngle;
+}
+
+void page::deskew(Mat &destination, double angle){
+	
+	std::vector<cv::Point> points;
+	cv::Mat_<uchar>::iterator it = Frame.begin<uchar>();
+	cv::Mat_<uchar>::iterator end = Frame.end<uchar>();
+
+	for (; it != end; ++it)
+	if (*it)
+		points.push_back(it.pos());
+
+	cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
+
+	cv::Mat rotationMat = cv::getRotationMatrix2D(box.center, angle, 1);
+
+	cv::Mat rotated;
+	cv::warpAffine(Frame, rotated, rotationMat, Frame.size(), cv::INTER_CUBIC);
+
+	rotated.copyTo(destination);
+}
+
+void page::computeHoughLine(Mat image, Mat &destination){
+
+	
+	cv::medianBlur(image, image, 3);
+
+	std::vector<cv::Vec4i> lines;
+	double meanAngle = 0.0;
+	Mat cannyOutput;
+	
+	Canny(image, cannyOutput, 50, 200, 3);
+	cv::HoughLinesP(cannyOutput, lines, 1, CV_PI / 180, 100, 100, 50);
+	
+	Mat houghOutput = Mat::zeros(image.size(), CV_8UC1);;
+	double lineangle, angle = 0.0;
+	unsigned int numberOfLines = lines.size();
+	
+	for (unsigned i = 0; i < numberOfLines; ++i)
+	{
+		lineangle = atan2((double)lines[i][3] - lines[i][1],
+			(double)lines[i][2] - lines[i][0]);
+		meanAngle += lineangle;
+	}
+
+	meanAngle /= numberOfLines;// mean angle, in radians.
+	meanAngle *= 180 / M_PI;
+
+	
+	for (unsigned i = 0; i < numberOfLines; ++i)
+	{
+		lineangle = atan2((double)lines[i][3] - lines[i][1],
+			(double)lines[i][2] - lines[i][0]);
+		lineangle *= 180 / M_PI;
+
+		if (lineangle > meanAngle - 20 && lineangle < meanAngle + 20)
+			cv::line(houghOutput, cv::Point(lines[i][0], lines[i][1]),
+			cv::Point(lines[i][2], lines[i][3]), cv::Scalar(255, 255, 255), 3, CV_AA);
+
+	}
+	
+	whitePixelCount = std::abs((double)countNonZero(houghOutput));
+
+	houghOutput.copyTo(destination);
+}
+
+
+
+void page::computeLineLength(vector<vector<Point>> contour){
+	
+	numberOfLines = contour.size();
+
+	int maxHeight = 0;
+	int largeY = 0;
+	int smallY = 0;
+
+
+	int yPreviousMinimum = 0;
+	double averageHeight = 0;
+	
+	for (int i = 0; i < numberOfLines; i++){
+		
+		int size = contour[i].size();
+		int xMax = 0;
+		int xMin = 10000;
+		int length = 0;
+		int height = 0;
+
+		int yMax = 0;
+		int yMin = 10000;
+		int whiteSpace = 0;
+
+		
+		
+		for (int j = 0; j < size; j++){
+			if (xMax < contour[i][j].x){
+				xMax = contour[i][j].x;
+			}
+			if (xMin > contour[i][j].x){
+				xMin = contour[i][j].x;
+			}
+
+			if (yMax < contour[i][j].y){
+				yMax = contour[i][j].y;
+			}
+			if (yMin > contour[i][j].y){
+				yMin = contour[i][j].y;
+			}
+		}
+
+		length = xMax - xMin;
+		height = yMax - yMin;
+		averageHeight += height;
+
+		if (maxHeight < height){
+			maxHeight = height;
+			largeY = yMax;
+			smallY = yMin;
+		}
+
+		lineLength.push_back(length);
+		lineHeight.push_back(height);
+
+		if (i == 0){
+			yPreviousMinimum = yMin;
+			continue;
+		}
+		else{
+			whiteSpace = yPreviousMinimum - yMax;
+			whiteSpaceHeight.push_back(whiteSpace);
+			yPreviousMinimum = yMin;
+		}
+	}
+
+	averageHeight = averageHeight / numberOfLines;
+	int lineCount = numberOfLines;
+	for (int i = 0; i < lineCount; i++){
+		if (lineHeight[i] < 0.4*averageHeight){
+			lineHeight.erase(lineHeight.begin() + i);
+			lineLength.erase(lineLength.begin() + i);
+			lineCount--;
+		}
+	}
+
+	numberOfLines = lineLength.size();
+
+}
+
+void page::computeContour(Mat image){
+
+	imwrite("contourInput.jpg", image);
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+
+	for (int i = 0; i < 5; i++){
+		dilate(image, image, Mat());
+	}
+
+	imwrite("dilation.jpg", image);
+
+	Canny(image, image, 50, 200, 3);
+	
+	findContours(image, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	imwrite("contour.jpg", image);
+
+	computeLineLength(contours);
+}
+
