@@ -66,5 +66,11 @@ public:
 	void computeLineLength(vector<vector<Point>> contour);
 	
 	
+	//Methods for obstacle detection
+	void deskewObstacle(Mat &destination, double angle);
+	vector<Vec4i> computeObstacleContour(Mat image);
+	vector<Vec4i> findObstacle(vector<vector<Point>> contour);
+	void removeObstacleRegion(vector<Vec4i> coordinates, Mat image);
+	
 };
 #endif /* defined(__ACP__Processor__) */

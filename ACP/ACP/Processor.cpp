@@ -498,3 +498,151 @@ void page::computeContour(Mat image){
 	computeLineLength(contours);
 }
 
+//Methods for obstacle detection
+
+void page::deskewObstacle(Mat &destination, double angle){
+
+	Mat copyOriginalFrame = originalFrame;
+
+	Canny(copyOriginalFrame, copyOriginalFrame, 50, 200, 3);
+
+	imwrite("copyCanny.jpg", copyOriginalFrame);
+	imwrite("original.jpg", originalFrame);
+
+	std::vector<cv::Point> points;
+	cv::Mat_<uchar>::iterator it = copyOriginalFrame.begin<uchar>();
+	cv::Mat_<uchar>::iterator end = copyOriginalFrame.end<uchar>();
+
+	for (; it != end; ++it)
+	if (*it)
+		points.push_back(it.pos());
+
+	cv::RotatedRect box = cv::minAreaRect(cv::Mat(points));
+
+	cv::Mat rotationMat = cv::getRotationMatrix2D(box.center, angle, 1);
+
+	cv::Mat rotated;
+	cv::warpAffine(copyOriginalFrame, rotated, rotationMat, copyOriginalFrame.size(), cv::INTER_CUBIC);
+
+	rotated.copyTo(destination);
+
+}
+
+vector<Vec4i> page::computeObstacleContour(Mat image){
+
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+
+	Mat imageCopy;
+	image.copyTo(imageCopy);
+
+	/*for (int i = 0; i < 2; i++){
+		dilate(image, image, Mat());
+	}*/
+
+	imwrite("dilation.jpg", image);
+
+	findContours(imageCopy, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+	imwrite("contour.jpg", imageCopy);
+
+	vector<Vec4i> coordinates = findObstacle(contours);
+	return coordinates;
+}
+
+void page::removeObstacleRegion(vector<Vec4i> coordinates, Mat image){
+
+	if (coordinates.size() != 0){
+
+		for (int i = 0; i < coordinates.size(); i++){
+			Vec4i obstacleRegion = coordinates[i];
+			Point p1(obstacleRegion[0], obstacleRegion[1]);
+			Point p2(obstacleRegion[2], obstacleRegion[3]);
+
+			rectangle(image, p1, p2, Scalar(0, 0, 0), -1, 8, 0);
+
+		}
+
+	}
+	
+}
+
+
+vector<Vec4i> page::findObstacle(vector<vector<Point>> contour){
+
+	numberOfLines = contour.size();
+
+	//std::vector<cv::Vec4i> coordinates;
+	vector<Vec4i> coordinates;
+
+	double averageHeight = 0;
+
+	for (int i = 0; i < numberOfLines; i++){
+
+		int size = contour[i].size();
+		
+		int height = 0;
+
+		int yMax = 0;
+		int yMin = 10000;
+		
+		for (int j = 0; j < size; j++){
+			
+			if (yMax < contour[i][j].y){
+				yMax = contour[i][j].y;
+			}
+			if (yMin > contour[i][j].y){
+				yMin = contour[i][j].y;
+			}
+		}
+
+		height = yMax - yMin;
+		averageHeight += height;
+			
+	}
+
+	averageHeight = averageHeight / numberOfLines;
+	
+	for (int i = 0; i < numberOfLines; i++){
+
+		int size = contour[i].size();
+
+		int height = 0;
+
+		int yMax = 0;
+		int yMin = 10000;
+		int xMax = 0;
+		int xMin = 10000;
+
+		int x1 = 0;
+		int x2 = 0;
+
+		for (int j = 0; j < size; j++){
+
+			if (yMax < contour[i][j].y){
+				yMax = contour[i][j].y;
+			}
+			if (yMin > contour[i][j].y){
+				yMin = contour[i][j].y;
+				
+			}
+
+			if (xMax < contour[i][j].x){
+				xMax = contour[i][j].x;
+			}
+			if (xMin > contour[i][j].x){
+				xMin = contour[i][j].x;
+			}
+
+		}
+
+		height = yMax - yMin;
+		if (height > 10 * averageHeight){
+			coordinates.push_back(Vec4i(xMax, yMax, xMin, yMin));
+		}
+
+	}
+	return coordinates;
+	
+}
+
