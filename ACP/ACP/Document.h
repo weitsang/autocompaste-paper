@@ -18,6 +18,13 @@ private:
     
 public:
     Document();
+	
+	void processPage(page &currentPage);
+	bool processLineLength(vector<int> Frame1, vector<int> Frame2);
+	bool checkFlip(page initialFrame, page nextFrame);
+	
+	
+	
     void checkIfPageHasBeenFlipped(Page previous, Page current);
 };
 
